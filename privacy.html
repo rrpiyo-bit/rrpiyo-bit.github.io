@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0a1e">
+  <meta name="description" content="WariCan！プライバシーポリシー">
+  <meta name="robots" content="noindex, follow">
+  <title>プライバシーポリシー | WariCan！</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DotGothic16&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:     #0a0a1e;
+      --panel:  #12122e;
+      --card:   #1c1c3a;
+      --yellow: #ffd700;
+      --yellow2:#a08000;
+      --green:  #00e676;
+      --cyan:   #00e5ff;
+      --red:    #ff5252;
+      --gray:   #556088;
+      --white:  #e8eaf6;
+      --font-pix: 'Press Start 2P', monospace;
+      --font-jp:  'DotGothic16', 'Hiragino Kaku Gothic ProN', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--font-jp);
+      min-height: 100vh;
+      line-height: 1.8;
+    }
+
+    /* CRT Scanlines */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent 0px, transparent 3px,
+        rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--panel);
+      border-bottom: 4px solid var(--yellow);
+      padding: 20px 16px 14px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .header-bg-pixels {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,215,0,0.12) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+    }
+    .header-title {
+      font-family: var(--font-pix);
+      font-size: clamp(0.55rem, 2.5vw, 0.75rem);
+      color: var(--cyan);
+      letter-spacing: 3px;
+      position: relative;
+    }
+    .header-app {
+      font-family: var(--font-pix);
+      font-size: clamp(0.9rem, 4vw, 1.2rem);
+      color: var(--yellow);
+      text-shadow: 3px 3px 0 var(--yellow2), 5px 5px 0 #000;
+      letter-spacing: 3px;
+      margin-top: 6px;
+      position: relative;
+    }
+    .back-link {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--cyan);
+      text-decoration: none;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      border: 2px solid var(--cyan);
+    }
+    .back-link:hover { background: rgba(0,229,255,0.1); }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+
+    /* ── Page Title ── */
+    .page-title {
+      font-family: var(--font-pix);
+      font-size: clamp(0.65rem, 3vw, 0.85rem);
+      color: var(--yellow);
+      text-align: center;
+      letter-spacing: 2px;
+      padding: 24px 0 8px;
+    }
+    .page-date {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--gray);
+      margin-bottom: 24px;
+    }
+
+    /* Pixel divider */
+    .px-divider {
+      height: 4px;
+      margin: 20px 0;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--yellow) 0, var(--yellow) 6px,
+        transparent 6px, transparent 12px
+      );
+    }
+    .px-divider.cyan {
+      background: repeating-linear-gradient(
+        90deg,
+        var(--cyan) 0, var(--cyan) 6px,
+        transparent 6px, transparent 12px
+      );
+    }
+
+    /* ── Section ── */
+    .section {
+      background: var(--panel);
+      border: 3px solid var(--cyan);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-family: var(--font-pix);
+      font-size: clamp(0.48rem, 2.2vw, 0.6rem);
+      color: var(--cyan);
+      letter-spacing: 2px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid rgba(0,229,255,0.2);
+    }
+    .section-title .icon { font-size: 1rem; }
+
+    /* ── Text ── */
+    .text {
+      font-size: 0.88rem;
+      color: var(--white);
+      line-height: 1.9;
+      margin-bottom: 12px;
+    }
+    .text:last-child { margin-bottom: 0; }
+
+    .text-gray {
+      font-size: 0.82rem;
+      color: var(--gray);
+      line-height: 1.9;
+      margin-bottom: 10px;
+    }
+
+    /* ── Lists ── */
+    .px-list {
+      list-style: none;
+      margin: 10px 0 12px;
+    }
+    .px-list li {
+      font-size: 0.86rem;
+      color: var(--white);
+      padding: 6px 0 6px 20px;
+      position: relative;
+      border-bottom: 1px solid rgba(85,96,136,0.3);
+      line-height: 1.7;
+    }
+    .px-list li:last-child { border-bottom: none; }
+    .px-list li::before {
+      content: '▶';
+      position: absolute;
+      left: 0;
+      color: var(--cyan);
+      font-size: 0.65rem;
+      top: 9px;
+    }
+
+    /* ── Info Box ── */
+    .info-box {
+      background: var(--card);
+      border-left: 4px solid var(--yellow);
+      padding: 10px 14px;
+      margin: 12px 0;
+      font-size: 0.82rem;
+      color: var(--gray);
+      line-height: 1.8;
+    }
+    .info-box.green { border-left-color: var(--green); }
+    .info-box.red   { border-left-color: var(--red); color: #ffaaaa; }
+
+    /* ── Highlight ── */
+    .hl-yellow { color: var(--yellow); font-weight: bold; }
+    .hl-green  { color: var(--green);  font-weight: bold; }
+    .hl-cyan   { color: var(--cyan);   font-weight: bold; }
+    .hl-red    { color: var(--red);    font-weight: bold; }
+
+    /* ── Link ── */
+    a {
+      color: var(--cyan);
+      text-decoration: underline;
+      word-break: break-all;
+    }
+    a:hover { color: var(--yellow); }
+
+    /* ── Contact Box ── */
+    .contact-box {
+      background: var(--card);
+      border: 3px solid var(--yellow);
+      padding: 18px 20px;
+      text-align: center;
+    }
+    .contact-title {
+      font-family: var(--font-pix);
+      font-size: 0.5rem;
+      color: var(--yellow);
+      letter-spacing: 2px;
+      margin-bottom: 14px;
+    }
+    .contact-name {
+      font-size: 1rem;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+    .contact-mail {
+      display: inline-block;
+      background: #000;
+      color: var(--green);
+      border: 2px solid var(--green);
+      padding: 8px 20px;
+      font-family: var(--font-jp);
+      font-size: 0.9rem;
+      margin-top: 6px;
+      word-break: break-all;
+    }
+    .contact-note {
+      font-size: 0.75rem;
+      color: var(--gray);
+      margin-top: 12px;
+      line-height: 1.7;
+    }
+
+    /* ── Table ── */
+    .px-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 0.84rem;
+    }
+    .px-table th, .px-table td {
+      padding: 9px 12px;
+      text-align: left;
+      border: 2px solid var(--card);
+      vertical-align: top;
+      line-height: 1.7;
+    }
+    .px-table th {
+      background: var(--card);
+      color: var(--cyan);
+      font-weight: normal;
+      white-space: nowrap;
+      width: 40%;
+    }
+    .px-table td { color: var(--white); }
+    .px-table tr:nth-child(even) td { background: rgba(28,28,58,0.5); }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      padding: 24px 16px;
+      color: var(--gray);
+      font-family: var(--font-pix);
+      font-size: 0.42rem;
+      letter-spacing: 1px;
+      border-top: 2px solid var(--card);
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--yellow); }
+  </style>
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9112642831900552" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-bg-pixels"></div>
+  <a class="back-link" href="index.html">◀ 戻る</a>
+  <div class="header-title">PRIVACY POLICY</div>
+  <div class="header-app">WariCan！</div>
+</header>
+
+<div class="container">
+
+  <div class="page-title">プライバシーポリシー</div>
+  <div class="page-date">制定日：2025年1月1日　最終更新：2025年1月1日</div>
+
+  <div class="px-divider"></div>
+
+  <p class="text">
+    WariCan！運営事務局（以下「当方」）は、本アプリ「WariCan！」（以下「本サービス」）における
+    ユーザーのプライバシーの保護を重要事項と考え、以下のプライバシーポリシーを定めます。
+    本サービスをご利用いただく場合は、本ポリシーの内容にご同意いただいたものとみなします。
+  </p>
+
+  <!-- ============================================
+       1. 広告配信 (AdSense)
+  ============================================= -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">📢</span>
+      SECTION 01 ─ Google AdSenseによる広告配信
+    </div>
+
+    <p class="text">
+      本サービスでは、Google合同会社（以下「Google」）が提供する広告配信サービス
+      「Google AdSense」を利用しています。
+    </p>
+
+    <p class="text">
+      Google AdSense はユーザーの興味・関心に合わせた広告を表示するために、
+      <span class="hl-yellow">Cookie</span> および
+      <span class="hl-yellow">デバイス識別子</span>
+      を使用することがあります。
+    </p>
+
+    <ul class="px-list">
+      <li>Googleはユーザーのブラウザ情報・訪問履歴をもとに、関連性の高い広告を表示します。</li>
+      <li>ユーザーは <a href="https://adssettings.google.com/" target="_blank" rel="noopener">Google広告設定</a> から、パーソナライズ広告をオプトアウトできます。</li>
+      <li>また <a href="https://optout.aboutads.info/" target="_blank" rel="noopener">aboutads.info</a> から第三者配信事業者のCookieを無効にすることも可能です。</li>
+    </ul>
+
+    <div class="info-box">
+      Google AdSenseに関する詳細は、
+      <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">Google広告のプライバシーポリシー</a>
+      をご確認ください。
+    </div>
+  </div>
+
+  <!-- ============================================
+       2. Cookie
+  ============================================= -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">🍪</span>
+      SECTION 02 ─ Cookieの使用について
+    </div>
+
+    <p class="text">
+      本サービスおよび本サービスに掲載される広告では、Cookie（クッキー）を使用する場合があります。
+      Cookie とは、ウェブサイトがブラウザを通じてユーザーの端末に保存する小さなテキストデータです。
+    </p>
+
+    <table class="px-table">
+      <tr>
+        <th>Cookieの種類</th>
+        <td>第一者Cookie（本サービス）、第三者Cookie（広告・解析）</td>
+      </tr>
+      <tr>
+        <th>使用目的</th>
+        <td>サービスの機能提供、広告のパーソナライズ、アクセス解析</td>
+      </tr>
+      <tr>
+        <th>保存期間</th>
+        <td>セッション終了時または最大2年間（Cookieの種類により異なります）</td>
+      </tr>
+      <tr>
+        <th>オプトアウト</th>
+        <td>ブラウザの設定からCookieを無効にできますが、一部機能が制限される場合があります</td>
+      </tr>
+    </table>
+
+    <p class="text-gray">
+      ブラウザのCookie設定変更方法は、ご利用のブラウザのヘルプページをご参照ください。
+      なお、Cookieを無効にした場合でも、本サービスの基本的な割り勘計算機能はご利用いただけます。
+    </p>
+  </div>
+
+  <!-- ============================================
+       3. Google Analytics
+  ============================================= -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">📊</span>
+      SECTION 03 ─ アクセス解析について
+    </div>
+
+    <p class="text">
+      本サービスでは、サービス改善を目的として Google LLC が提供する
+      <span class="hl-cyan">Google Analytics</span> を利用する場合があります。
+      Google Analytics はCookieを使用してユーザーの利用状況を収集・分析します。
+    </p>
+
+    <ul class="px-list">
+      <li>収集されるデータは匿名化されており、個人を特定する情報は含まれません。</li>
+      <li>収集されたデータはGoogleのプライバシーポリシーに基づき管理されます。</li>
+      <li>Google Analytics のデータ収集は、<a href="https://tools.google.com/dlpage/gaoptout/" target="_blank" rel="noopener">Google Analytics オプトアウトアドオン</a>（ブラウザ拡張機能）を使用することで無効にできます。</li>
+    </ul>
+
+    <div class="info-box green">
+      Google Analytics のデータ収集・処理に関する詳細は、
+      <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google プライバシーポリシー</a> をご確認ください。
+    </div>
+
+    <p class="text-gray">
+      ※ 現時点で本サービスがGoogle Analyticsを導入していない場合でも、
+      将来的に導入する可能性があるため、あらかじめ本ポリシーに記載しています。
+    </p>
+  </div>
+
+  <!-- ============================================
+       4. 個人情報の取り扱い
+  ============================================= -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">🔒</span>
+      SECTION 04 ─ 個人情報の取り扱いについて
+    </div>
+
+    <p class="text">
+      本サービス（WariCan！）は、割り勘計算をブラウザ上で完結させるアプリです。
+      ユーザーが入力した金額・人数・名前などのデータは、
+      <span class="hl-green">すべてお使いの端末内でのみ処理</span>され、
+      当方のサーバーへ送信・保存されることはありません。
+    </p>
+
+    <ul class="px-list">
+      <li>ユーザーの入力データは外部サーバーに送信されません。</li>
+      <li>本サービスはログインや会員登録の機能を持たず、氏名・メールアドレス等の個人情報を直接収集しません。</li>
+      <li>ページを閉じると入力データはすべて消去されます（ブラウザのローカルストレージへの保存は行いません）。</li>
+    </ul>
+
+    <div class="info-box">
+      ただし、Google AdSense や Google Analytics による第三者サービスを通じた
+      匿名の利用統計データが収集される場合があります（前述の各セクションをご参照ください）。
+    </div>
+
+    <p class="text">
+      当方が個人情報を取得する場合（お問い合わせ等）は、あらかじめ利用目的を明示し、
+      目的の範囲内でのみ利用します。法令に基づく場合を除き、第三者に提供することはありません。
+    </p>
+
+    <table class="px-table">
+      <tr>
+        <th>取得する情報</th>
+        <td>お問い合わせの際に任意でご提供いただくメールアドレス・お名前・お問い合わせ内容</td>
+      </tr>
+      <tr>
+        <th>利用目的</th>
+        <td>お問い合わせへの返答・サービス改善のための参考</td>
+      </tr>
+      <tr>
+        <th>第三者提供</th>
+        <td>法令に基づく場合を除き、一切行いません</td>
+      </tr>
+      <tr>
+        <th>保存期間</th>
+        <td>お問い合わせ対応完了後、速やかに削除します</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ============================================
+       5. PWA / Service Worker
+  ============================================= -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">📱</span>
+      SECTION 05 ─ PWA機能・Service Workerについて
+    </div>
+
+    <p class="text">
+      本サービスは <span class="hl-cyan">PWA（Progressive Web App）</span> に対応しており、
+      ホーム画面への追加やオフライン利用が可能です。
+      この機能を実現するために Service Worker を使用しています。
+    </p>
+
+    <ul class="px-list">
+      <li>Service Worker はアプリのHTMLやCSSなどの静的ファイルをブラウザのキャッシュに保存します。</li>
+      <li>保存されるのは表示に必要なファイルのみであり、ユーザーの入力データは含まれません。</li>
+      <li>キャッシュはブラウザの設定からいつでも削除できます。</li>
+    </ul>
+  </div>
+
+  <!-- ============================================
+       6. 免責事項
+  ============================================= -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">⚠</span>
+      SECTION 06 ─ 免責事項
+    </div>
+
+    <ul class="px-list">
+      <li>本サービスの計算結果はあくまで参考値です。実際の精算には各自でご確認ください。</li>
+      <li>本サービスのご利用により生じたいかなる損害についても、当方は一切の責任を負いません。</li>
+      <li>本サービスは予告なく内容の変更・停止・終了する場合があります。</li>
+      <li>リンク先の外部サイトに関するトラブルについて、当方は責任を負いかねます。</li>
+    </ul>
+  </div>
+
+  <!-- ============================================
+       7. ポリシーの変更
+  ============================================= -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">📝</span>
+      SECTION 07 ─ プライバシーポリシーの変更
+    </div>
+
+    <p class="text">
+      当方は、法令の改正やサービス内容の変更等に伴い、
+      本プライバシーポリシーを予告なく変更する場合があります。
+      変更後のポリシーは本ページに掲載した時点から効力を生じるものとします。
+    </p>
+
+    <div class="info-box">
+      重要な変更を行う場合は、本サービス上でお知らせします。
+      定期的に本ページをご確認されることをお勧めします。
+    </div>
+  </div>
+
+  <div class="px-divider cyan"></div>
+
+  <!-- ============================================
+       Contact
+  ============================================= -->
+  <div class="contact-box">
+    <div class="contact-title">📮 CONTACT</div>
+    <div class="contact-name">WariCan！運営事務局</div>
+    <p class="text-gray" style="margin-bottom:16px">
+      本ポリシーに関するお問い合わせは以下の窓口で受け付けています。
+    </p>
+    <div style="display:flex; flex-direction:column; gap:10px; align-items:center;">
+      <a href="contact.html"
+         style="display:flex; align-items:center; justify-content:center; gap:8px;
+                width:100%; max-width:320px; padding:13px 16px;
+                background:#001800; color:#00e676;
+                border:none; box-shadow:4px 4px 0 #000, inset 0 0 0 2px #007a3d;
+                font-family:var(--font-jp); font-size:0.9rem; text-decoration:none;">
+        📝 お問い合わせフォーム
+      </a>
+      <a href="https://twitter.com/retro_app_jp"
+         target="_blank" rel="noopener noreferrer"
+         style="display:flex; align-items:center; justify-content:center; gap:8px;
+                width:100%; max-width:320px; padding:13px 16px;
+                background:#001022; color:#1d9bf0;
+                border:none; box-shadow:4px 4px 0 #000, inset 0 0 0 2px #0a4a7a;
+                font-family:var(--font-jp); font-size:0.9rem; text-decoration:none;">
+        𝕏 X (Twitter) DM
+      </a>
+    </div>
+    <p class="contact-note" style="margin-top:14px">
+      返信までに数日お時間をいただく場合があります。<br>
+      内容によっては返信できない場合もあります。
+    </p>
+  </div>
+
+  <div class="px-divider"></div>
+
+  <p style="text-align:center; font-size:0.8rem; color:var(--gray); margin-bottom:8px">
+    <a href="index.html">◀ WariCan！ アプリに戻る</a>
+  </p>
+
+  <footer class="footer">
+    WariCan！ v1.0 &copy; 2025 WariCan！運営事務局 &nbsp;|&nbsp; ALL RIGHTS RESERVED
+  </footer>
+
+</div><!-- /container -->
+</body>
+</html>

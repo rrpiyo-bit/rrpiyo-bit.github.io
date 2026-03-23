@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0a1e">
+  <meta name="description" content="WariCan！へのお問い合わせページ。バグ報告・ご意見・ご要望はこちら。">
+  <meta name="robots" content="noindex, follow">
+  <title>お問い合わせ | WariCan！</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DotGothic16&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:      #0a0a1e;
+      --panel:   #12122e;
+      --card:    #1c1c3a;
+      --yellow:  #ffd700;
+      --yellow2: #a08000;
+      --green:   #00e676;
+      --green2:  #007a3d;
+      --cyan:    #00e5ff;
+      --red:     #ff5252;
+      --gray:    #556088;
+      --white:   #e8eaf6;
+      --font-pix: 'Press Start 2P', monospace;
+      --font-jp:  'DotGothic16', 'Hiragino Kaku Gothic ProN', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--font-jp);
+      min-height: 100vh;
+      line-height: 1.8;
+    }
+
+    /* CRT Scanlines */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent 0px, transparent 3px,
+        rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--panel);
+      border-bottom: 4px solid var(--yellow);
+      padding: 20px 16px 14px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .header-bg-pixels {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,215,0,0.12) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+    }
+    .header-label {
+      font-family: var(--font-pix);
+      font-size: clamp(0.5rem, 2.2vw, 0.65rem);
+      color: var(--cyan);
+      letter-spacing: 3px;
+      position: relative;
+    }
+    .header-app {
+      font-family: var(--font-pix);
+      font-size: clamp(0.85rem, 4vw, 1.15rem);
+      color: var(--yellow);
+      text-shadow: 3px 3px 0 var(--yellow2), 5px 5px 0 #000;
+      letter-spacing: 3px;
+      margin-top: 6px;
+      position: relative;
+    }
+    .back-link {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--cyan);
+      text-decoration: none;
+      font-size: 0.78rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 9px;
+      border: 2px solid var(--cyan);
+      transition: background 0.1s;
+    }
+    .back-link:hover { background: rgba(0,229,255,0.1); }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px 16px 48px;
+    }
+
+    /* ── Page title ── */
+    .page-title {
+      font-family: var(--font-pix);
+      font-size: clamp(0.6rem, 2.8vw, 0.8rem);
+      color: var(--yellow);
+      text-align: center;
+      letter-spacing: 2px;
+      padding: 24px 0 6px;
+    }
+    .page-sub {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--gray);
+      margin-bottom: 6px;
+    }
+
+    /* Pixel divider */
+    .px-divider {
+      height: 4px;
+      margin: 18px 0;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--yellow) 0, var(--yellow) 6px,
+        transparent 6px, transparent 12px
+      );
+    }
+    .px-divider.cyan {
+      background: repeating-linear-gradient(
+        90deg,
+        var(--cyan) 0, var(--cyan) 6px,
+        transparent 6px, transparent 12px
+      );
+    }
+
+    /* ── Section ── */
+    .section {
+      background: var(--panel);
+      border: 3px solid var(--cyan);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: var(--font-pix);
+      font-size: clamp(0.45rem, 2vw, 0.56rem);
+      color: var(--cyan);
+      letter-spacing: 2px;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid rgba(0,229,255,0.2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title .icon { font-size: 1rem; }
+
+    /* ── Text ── */
+    .text {
+      font-size: 0.88rem;
+      color: var(--white);
+      line-height: 1.9;
+      margin-bottom: 12px;
+    }
+    .text:last-child { margin-bottom: 0; }
+    .text-gray {
+      font-size: 0.82rem;
+      color: var(--gray);
+      line-height: 1.85;
+    }
+
+    /* ── Info box ── */
+    .info-box {
+      background: var(--card);
+      border-left: 4px solid var(--gray);
+      padding: 10px 14px;
+      margin: 12px 0;
+      font-size: 0.82rem;
+      color: var(--gray);
+      line-height: 1.8;
+    }
+    .info-box.yellow { border-left-color: var(--yellow); color: #c8a800; }
+    .info-box.green  { border-left-color: var(--green);  color: #00b85a; }
+    .info-box.red    { border-left-color: var(--red);    color: #ff8080; }
+
+    /* ── Category cards ── */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+    .category-card {
+      background: var(--card);
+      border: 2px solid var(--gray);
+      padding: 14px 12px;
+      text-align: center;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .category-card.bug    { border-color: var(--red); }
+    .category-card.idea   { border-color: var(--yellow); }
+    .category-card.other  { border-color: var(--cyan); }
+
+    .category-icon { font-size: 1.6rem; display: block; margin-bottom: 8px; }
+    .category-name {
+      font-family: var(--font-pix);
+      font-size: 0.45rem;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .category-card.bug   .category-name { color: var(--red); }
+    .category-card.idea  .category-name { color: var(--yellow); }
+    .category-card.other .category-name { color: var(--cyan); }
+
+    .category-desc {
+      font-size: 0.75rem;
+      color: var(--gray);
+      line-height: 1.6;
+    }
+
+    /* ── Response time ── */
+    .response-box {
+      background: var(--card);
+      border: 3px solid var(--yellow);
+      padding: 16px 18px;
+      margin: 14px 0;
+    }
+    .response-title {
+      font-family: var(--font-pix);
+      font-size: 0.45rem;
+      color: var(--yellow);
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+    .response-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(85,96,136,0.3);
+      font-size: 0.85rem;
+    }
+    .response-row:last-child { border-bottom: none; }
+    .response-label { color: var(--gray); min-width: 110px; flex-shrink: 0; }
+    .response-value { color: var(--white); }
+    .response-value strong { color: var(--yellow); }
+
+    /* ── Main CTA Button ── */
+    .btn-form-wrap {
+      text-align: center;
+      margin: 20px 0 8px;
+    }
+    .btn-form {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 400px;
+      padding: 20px 24px;
+      background: #001800;
+      color: var(--green);
+      border: none;
+      box-shadow: 5px 5px 0 #000, inset 0 0 0 3px var(--green2);
+      font-family: var(--font-pix);
+      font-size: clamp(0.65rem, 3vw, 0.85rem);
+      letter-spacing: 2px;
+      text-decoration: none;
+      cursor: pointer;
+      text-shadow: 0 0 10px rgba(0,230,118,0.5);
+      transition: transform 0.05s, box-shadow 0.05s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-form:active {
+      transform: translate(5px, 5px);
+      box-shadow: 0 0 0 #000, inset 0 0 0 3px var(--green);
+    }
+    .btn-form-icon { font-size: 1.2rem; }
+    .btn-form-note {
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--gray);
+      margin-top: 8px;
+    }
+    .btn-form-note a { color: var(--gray); }
+
+    /* ── Steps ── */
+    .steps {
+      counter-reset: step;
+      margin: 12px 0;
+    }
+    .step-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(85,96,136,0.25);
+    }
+    .step-item:last-child { border-bottom: none; }
+    .step-num {
+      font-family: var(--font-pix);
+      font-size: 0.55rem;
+      color: #000;
+      background: var(--cyan);
+      min-width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .step-body { flex: 1; }
+    .step-title {
+      font-size: 0.9rem;
+      color: var(--white);
+      margin-bottom: 3px;
+    }
+    .step-desc {
+      font-size: 0.78rem;
+      color: var(--gray);
+      line-height: 1.7;
+    }
+
+    /* ── FAQ ── */
+    .faq-item {
+      border-bottom: 2px solid var(--card);
+      padding: 12px 0;
+    }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      font-size: 0.88rem;
+      color: var(--yellow);
+      margin-bottom: 6px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .faq-q-icon {
+      font-family: var(--font-pix);
+      font-size: 0.55rem;
+      background: var(--yellow);
+      color: #000;
+      padding: 3px 5px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .faq-a {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      font-size: 0.84rem;
+      color: var(--gray);
+      line-height: 1.8;
+      padding-left: 4px;
+    }
+    .faq-a-icon {
+      font-family: var(--font-pix);
+      font-size: 0.55rem;
+      background: var(--cyan);
+      color: #000;
+      padding: 3px 5px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* ── Links ── */
+    a { color: var(--cyan); text-decoration: underline; }
+    a:hover { color: var(--yellow); }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      padding: 24px 16px;
+      color: var(--gray);
+      font-family: var(--font-pix);
+      font-size: 0.42rem;
+      letter-spacing: 1px;
+      border-top: 2px solid var(--card);
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--yellow); }
+  </style>
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9112642831900552" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="header">
+  <div class="header-bg-pixels"></div>
+  <a class="back-link" href="index.html">◀ 戻る</a>
+  <div class="header-label">CONTACT</div>
+  <div class="header-app">WariCan！</div>
+</header>
+
+<div class="container">
+
+  <div class="page-title">お問い合わせ</div>
+  <p class="page-sub">バグ報告・ご意見・ご要望はこちら</p>
+
+  <div class="px-divider"></div>
+
+  <!-- =============================================
+       お問い合わせの種類
+  ============================================== -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">📋</span>
+      お問い合わせの種類
+    </div>
+
+    <p class="text">
+      以下の3種類のお問い合わせを受け付けています。
+      Googleフォームのフォーム内で種類をお選びください。
+    </p>
+
+    <div class="category-grid">
+
+      <div class="category-card bug">
+        <span class="category-icon">🐛</span>
+        <div class="category-name">BUG REPORT</div>
+        <div class="category-desc">
+          計算がおかしい、ボタンが動かないなどの不具合・エラー
+        </div>
+      </div>
+
+      <div class="category-card idea">
+        <span class="category-icon">💡</span>
+        <div class="category-name">FEEDBACK</div>
+        <div class="category-desc">
+          ご意見・ご要望・機能追加のアイデアなど
+        </div>
+      </div>
+
+      <div class="category-card other">
+        <span class="category-icon">✉️</span>
+        <div class="category-name">OTHER</div>
+        <div class="category-desc">
+          広告・掲載・その他のお問い合わせ
+        </div>
+      </div>
+
+    </div>
+
+    <div class="info-box yellow">
+      ⚠ 計算結果の精算トラブル・金銭に関するご相談は対応しかねます。あらかじめご了承ください。
+    </div>
+  </div>
+
+  <!-- =============================================
+       返信目安
+  ============================================== -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">⏱</span>
+      返信までの目安
+    </div>
+
+    <div class="response-box">
+      <div class="response-title">⏰ RESPONSE TIME</div>
+
+      <div class="response-row">
+        <span class="response-label">通常のお問い合わせ</span>
+        <span class="response-value"><strong>2〜5営業日以内</strong></span>
+      </div>
+      <div class="response-row">
+        <span class="response-label">バグ報告</span>
+        <span class="response-value"><strong>1〜3営業日以内</strong>（優先対応）</span>
+      </div>
+      <div class="response-row">
+        <span class="response-label">土日・祝日</span>
+        <span class="response-value">翌営業日以降の対応になります</span>
+      </div>
+      <div class="response-row">
+        <span class="response-label">返信不要の場合</span>
+        <span class="response-value">フォーム内でその旨をお書きください</span>
+      </div>
+    </div>
+
+    <div class="info-box">
+      お問い合わせの内容によっては、返信できない場合や回答までにお時間をいただく場合があります。
+      また、スパムと判断されたお問い合わせは返信なく削除する場合があります。
+    </div>
+  </div>
+
+  <!-- =============================================
+       フォームへのボタン
+  ============================================== -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">📝</span>
+      フォームから送信する
+    </div>
+
+    <div class="steps">
+      <div class="step-item">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <div class="step-title">フォームを開く</div>
+          <div class="step-desc">下のボタンをタップしてGoogleフォームを開いてください。Googleアカウントは不要です。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <div class="step-title">種類を選んで入力する</div>
+          <div class="step-desc">お問い合わせの種類を選択し、内容をできるだけ詳しくご記入ください。</div>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <div class="step-title">送信して完了</div>
+          <div class="step-desc">返信を希望する場合はメールアドレスをご入力ください（任意）。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-form-wrap">
+      <!--
+        ↓ href の "https://forms.gle/XXXXXXXXXX" を
+          実際の Google フォームの URL に差し替えてください
+      -->
+      <a class="btn-form"
+         href="https://forms.gle/MjZpciTCY4YPxQA16"
+         target="_blank"
+         rel="noopener noreferrer"
+         id="formLink">
+        <span class="btn-form-icon">📝</span>
+        お問い合わせフォームを開く
+      </a>
+    </div>
+    <p class="btn-form-note">
+      ※ Googleフォームが開きます（外部サイト）<br>
+      Googleアカウントなしでもご利用いただけます
+    </p>
+
+    <div style="text-align:center; margin-top:12px;">
+      <a class="btn-form"
+         href="https://twitter.com/retro_app_jp"
+         target="_blank"
+         rel="noopener noreferrer"
+         style="background:#001022; box-shadow:5px 5px 0 #000, inset 0 0 0 3px #0a4a7a; color:#1d9bf0; text-shadow:0 0 10px rgba(29,155,240,0.5); max-width:400px;">
+        <span class="btn-form-icon">𝕏</span>
+        X (Twitter) でDMを送る
+      </a>
+    </div>
+    <p class="btn-form-note">
+      ※ X (Twitter) のDMページが開きます<br>
+      フォローしていなくてもDM可能な場合があります
+    </p>
+
+    <div class="info-box green" style="margin-top:16px">
+      バグ報告の際は、端末の種類（iPhone / Android / PCなど）と
+      ブラウザ名（Safari / Chrome など）も一緒にお知らせいただけると助かります。
+    </div>
+  </div>
+
+  <!-- =============================================
+       よくある質問
+  ============================================== -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon">❓</span>
+      よくある質問（FAQ）
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <span class="faq-q-icon">Q</span>
+        計算結果が実際の金額と合いません。
+      </div>
+      <div class="faq-a">
+        <span class="faq-a-icon">A</span>
+        端数処理の設定（切り捨て・四捨五入・切り上げ）によって1〜数円のずれが生じることがあります。
+        設定画面で端数処理方法をご確認ください。それでも解消しない場合はバグ報告をお送りください。
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <span class="faq-q-icon">Q</span>
+        入力したデータは保存されますか？
+      </div>
+      <div class="faq-a">
+        <span class="faq-a-icon">A</span>
+        いいえ。本アプリはすべてブラウザ内で計算を行い、入力データをサーバーに送信・保存することは一切ありません。
+        ページを閉じるとデータは消えます。
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <span class="faq-q-icon">Q</span>
+        ホーム画面に追加できますか？
+      </div>
+      <div class="faq-a">
+        <span class="faq-a-icon">A</span>
+        対応しています。iOSのSafariでは「共有」→「ホーム画面に追加」、
+        AndroidのChromeでは「ホーム画面に追加」のバナーが表示されます。
+        追加するとオフラインでも利用できます。
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">
+        <span class="faq-q-icon">Q</span>
+        機能追加のリクエストはできますか？
+      </div>
+      <div class="faq-a">
+        <span class="faq-a-icon">A</span>
+        「ご意見・ご要望」からお気軽にどうぞ。すべてに対応できるとは限りませんが、
+        参考にさせていただきます。
+      </div>
+    </div>
+
+  </div>
+
+  <div class="px-divider cyan"></div>
+
+  <p style="text-align:center; font-size:0.8rem; color:var(--gray); margin-bottom:6px">
+    <a href="privacy.html">プライバシーポリシー</a>
+    &nbsp;｜&nbsp;
+    <a href="index.html">◀ アプリに戻る</a>
+  </p>
+
+  <footer class="footer">
+    WariCan！ v1.0 &copy; 2025 WariCan！運営事務局
+  </footer>
+
+</div><!-- /container -->
+
+<script>
+  // ボタンの href が差し替え前のままであることをコンソールで警告
+  const link = document.getElementById('formLink');
+  if (link && link.href.includes('XXXXXXXXXX')) {
+    console.warn('[WariCan！] contact.html: Google フォームのURLが未設定です。href の "https://forms.gle/XXXXXXXXXX" を実際のURLに変更してください。');
+  }
+</script>
+</body>
+</html>

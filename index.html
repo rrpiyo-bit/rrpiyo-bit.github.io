@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0a1e">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="WariCan！">
+  <meta name="description" content="レトロゲーム風割り勘計算アプリ「WariCan！」 - 8bitピクセル風で楽しく割り勘！">
+  <title>WariCan！</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="icon" href="icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DotGothic16&display=swap" rel="stylesheet">
+
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9112642831900552" crossorigin="anonymous"></script>
+
+  <style>
+    /* ===============================
+       CSS Variables & Reset
+    =============================== */
+    :root {
+      --bg:       #0a0a1e;
+      --panel:    #12122e;
+      --card:     #1c1c3a;
+      --yellow:   #ffd700;
+      --yellow2:  #a08000;
+      --green:    #00e676;
+      --green2:   #007a3d;
+      --cyan:     #00e5ff;
+      --red:      #ff5252;
+      --gray:     #556088;
+      --white:    #e8eaf6;
+      --font-pix: 'Press Start 2P', monospace;
+      --font-jp:  'DotGothic16', 'Hiragino Kaku Gothic ProN', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--font-jp);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* CRT Scanlines */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent 0px, transparent 3px,
+        rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ===============================
+       Header
+    =============================== */
+    .header {
+      background: var(--panel);
+      border-bottom: 4px solid var(--yellow);
+      padding: 20px 16px 14px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-bg-pixels {
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255,215,0,0.15) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+    }
+
+    .header h1 {
+      font-family: var(--font-pix);
+      font-size: clamp(1.1rem, 5vw, 1.5rem);
+      color: var(--yellow);
+      text-shadow:
+        3px 3px 0 var(--yellow2),
+        6px 6px 0 #000,
+        0 0 20px rgba(255,215,0,0.4);
+      letter-spacing: 4px;
+      position: relative;
+      animation: titlePulse 4s ease-in-out infinite;
+    }
+
+    @keyframes titlePulse {
+      0%,100% { text-shadow: 3px 3px 0 var(--yellow2), 6px 6px 0 #000, 0 0 20px rgba(255,215,0,0.4); }
+      50%      { text-shadow: 3px 3px 0 var(--yellow2), 6px 6px 0 #000, 0 0 35px rgba(255,215,0,0.8); }
+    }
+
+    .header-sub {
+      font-family: var(--font-pix);
+      font-size: 0.42rem;
+      color: var(--green);
+      letter-spacing: 3px;
+      margin-top: 8px;
+      position: relative;
+    }
+
+    .header-coins {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .hcoin {
+      font-size: 1.1rem;
+      animation: coinFloat 2s ease-in-out infinite;
+    }
+    .hcoin:nth-child(2) { animation-delay: 0.3s; }
+    .hcoin:nth-child(3) { animation-delay: 0.6s; }
+
+    @keyframes coinFloat {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-4px); }
+    }
+
+    /* ===============================
+       Layout
+    =============================== */
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 12px;
+    }
+
+    /* ===============================
+       Install Banner
+    =============================== */
+    .install-banner {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: var(--card);
+      border: 2px solid var(--yellow);
+      padding: 10px 12px;
+      margin: 10px 0;
+    }
+    .install-banner.show { display: flex; }
+    .install-text { flex: 1; font-size: 0.8rem; color: var(--white); }
+    .btn-install-small {
+      background: var(--yellow); color: #000;
+      border: none; padding: 6px 10px;
+      font-family: var(--font-jp); font-size: 0.75rem;
+      cursor: pointer; white-space: nowrap; font-weight: bold;
+    }
+    .btn-dismiss {
+      background: transparent; color: var(--gray);
+      border: 1px solid var(--gray); padding: 4px 8px;
+      cursor: pointer; font-size: 0.75rem;
+    }
+
+    /* ===============================
+       Ad Slots
+    =============================== */
+    .ad-slot {
+      background: var(--panel);
+      border: 2px solid var(--gray);
+      min-height: 60px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 12px 0;
+      overflow: hidden;
+    }
+    .ad-placeholder {
+      color: var(--gray);
+      font-family: var(--font-pix);
+      font-size: 0.45rem;
+      letter-spacing: 1px;
+    }
+
+    /* ===============================
+       Section Titles
+    =============================== */
+    .section-title {
+      font-family: var(--font-pix);
+      font-size: 0.5rem;
+      color: var(--cyan);
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: var(--cyan);
+      opacity: 0.3;
+    }
+
+    /* ===============================
+       Settings Panel
+    =============================== */
+    .settings-panel {
+      background: var(--panel);
+      border: 3px solid var(--cyan);
+      padding: 14px;
+      margin: 12px 0;
+    }
+
+    .settings-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .settings-row:last-child { margin-bottom: 0; }
+
+    .settings-label {
+      min-width: 72px;
+      font-size: 0.85rem;
+      color: var(--white);
+    }
+
+    .btn-group { display: flex; gap: 4px; flex-wrap: wrap; }
+
+    /* Pixel Buttons */
+    .btn-px {
+      font-family: var(--font-jp);
+      font-size: 0.78rem;
+      padding: 7px 11px;
+      background: var(--card);
+      color: var(--white);
+      border: none;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 #000, inset -1px -1px 0 rgba(0,0,0,0.4);
+      transition: transform 0.05s, box-shadow 0.05s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-px:active {
+      box-shadow: 0 0 0 #000;
+      transform: translate(3px, 3px);
+    }
+    .btn-px.active {
+      background: var(--yellow);
+      color: #000;
+      font-weight: bold;
+      box-shadow: 3px 3px 0 #000, inset 0 0 0 2px var(--yellow2);
+    }
+
+    /* ===============================
+       Mode Tabs
+    =============================== */
+    .mode-tabs {
+      display: flex;
+      border: 3px solid var(--yellow);
+      margin: 12px 0 0;
+    }
+    .mode-tab {
+      flex: 1;
+      padding: 11px 4px;
+      background: var(--panel);
+      color: var(--gray);
+      border: none;
+      border-right: 2px solid var(--yellow);
+      cursor: pointer;
+      font-family: var(--font-jp);
+      font-size: 0.78rem;
+      transition: background 0.1s, color 0.1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mode-tab:last-child { border-right: none; }
+    .mode-tab.active {
+      background: var(--yellow);
+      color: #000;
+      font-weight: bold;
+    }
+
+    /* ===============================
+       Mode Panels
+    =============================== */
+    .mode-panel {
+      display: none;
+      background: var(--panel);
+      border: 3px solid var(--yellow);
+      border-top: none;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .mode-panel.active { display: block; }
+
+    /* ===============================
+       Inputs
+    =============================== */
+    .input-group { margin-bottom: 16px; }
+    .input-group:last-child { margin-bottom: 0; }
+
+    .input-label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--cyan);
+      margin-bottom: 6px;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .px-input {
+      flex: 1;
+      width: 100%;
+      background: #000;
+      color: var(--green);
+      border: 3px solid var(--green2);
+      padding: 10px 12px;
+      font-family: var(--font-pix);
+      font-size: 1rem;
+      text-align: right;
+      -webkit-appearance: none;
+      appearance: none;
+      caret-color: var(--green);
+      outline: none;
+    }
+    .px-input:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 8px rgba(0,230,118,0.3);
+    }
+    .px-input::placeholder {
+      color: #2a4a2a;
+      font-size: 0.7rem;
+    }
+    /* Remove number input arrows */
+    .px-input::-webkit-outer-spin-button,
+    .px-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .px-input[type=number] { -moz-appearance: textfield; }
+
+    .input-unit {
+      color: var(--cyan);
+      font-size: 0.8rem;
+      white-space: nowrap;
+      min-width: 18px;
+    }
+
+    /* ===============================
+       Individual Mode
+    =============================== */
+    .person-list { margin-bottom: 12px; }
+
+    .person-item {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 8px;
+      animation: slideIn 0.15s ease;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(-16px); opacity: 0; }
+      to   { transform: translateX(0);     opacity: 1; }
+    }
+
+    .person-name-input {
+      flex: 1;
+      min-width: 0;
+      background: #000;
+      color: var(--cyan);
+      border: 2px solid #1a3a44;
+      padding: 9px 8px;
+      font-family: var(--font-jp);
+      font-size: 0.85rem;
+      outline: none;
+    }
+    .person-name-input:focus { border-color: var(--cyan); }
+
+    .person-amount-input {
+      width: 110px;
+      background: #000;
+      color: var(--green);
+      border: 2px solid var(--green2);
+      padding: 9px 8px;
+      font-family: var(--font-pix);
+      font-size: 0.85rem;
+      text-align: right;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .person-amount-input:focus { border-color: var(--green); }
+    .person-amount-input::-webkit-outer-spin-button,
+    .person-amount-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .person-amount-input[type=number] { -moz-appearance: textfield; }
+
+    .btn-remove {
+      background: #2a0000;
+      color: var(--red);
+      border: 2px solid #550000;
+      padding: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      line-height: 1;
+      flex-shrink: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-remove:active { background: #550000; }
+
+    .btn-add-person {
+      width: 100%;
+      padding: 11px;
+      background: #001a00;
+      color: var(--green);
+      border: 2px dashed var(--green2);
+      cursor: pointer;
+      font-family: var(--font-jp);
+      font-size: 0.85rem;
+      margin-bottom: 14px;
+      transition: background 0.1s, border-color 0.1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-add-person:active { background: #003300; border-color: var(--green); }
+
+    .shared-section {
+      border-top: 2px solid var(--gray);
+      padding-top: 14px;
+    }
+    .shared-label {
+      font-size: 0.82rem;
+      color: var(--gray);
+      margin-bottom: 8px;
+    }
+
+    /* ===============================
+       Info Box
+    =============================== */
+    .info-box {
+      background: var(--card);
+      border-left: 4px solid var(--gray);
+      padding: 8px 10px;
+      margin-top: 10px;
+      font-size: 0.75rem;
+      color: var(--gray);
+      line-height: 1.7;
+    }
+
+    /* ===============================
+       Error Message
+    =============================== */
+    .error-msg {
+      display: none;
+      background: #1a0000;
+      border: 3px solid var(--red);
+      color: var(--red);
+      padding: 10px 12px;
+      font-size: 0.8rem;
+      margin: 8px 0;
+    }
+    .error-msg.show {
+      display: block;
+      animation: shake 0.25s ease;
+    }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-8px); }
+      60%      { transform: translateX(8px); }
+    }
+
+    /* ===============================
+       Calculate Button
+    =============================== */
+    .btn-calculate {
+      width: 100%;
+      padding: 20px;
+      background: #001800;
+      color: var(--green);
+      border: none;
+      box-shadow: 5px 5px 0 #000, inset 0 0 0 3px var(--green2);
+      font-family: var(--font-pix);
+      font-size: clamp(0.75rem, 3.5vw, 1rem);
+      cursor: pointer;
+      letter-spacing: 3px;
+      margin: 12px 0;
+      text-shadow: 0 0 10px rgba(0,230,118,0.6);
+      transition: transform 0.05s, box-shadow 0.05s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-calculate:active {
+      box-shadow: 0 0 0 #000, inset 0 0 0 3px var(--green);
+      transform: translate(5px, 5px);
+    }
+    .btn-calculate:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* ===============================
+       Results Panel
+    =============================== */
+    .results-panel {
+      display: none;
+      background: var(--panel);
+      border: 4px solid var(--green);
+      padding: 18px;
+      margin: 12px 0;
+      box-shadow: 0 0 20px rgba(0,230,118,0.2);
+    }
+    .results-panel.show {
+      display: block;
+      animation: resultReveal 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes resultReveal {
+      from { transform: scale(0.88); opacity: 0; }
+      to   { transform: scale(1);    opacity: 1; }
+    }
+
+    .result-header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .result-coin {
+      font-size: 2rem;
+      display: inline-block;
+      animation: spinCoin 0.8s ease-out;
+    }
+    @keyframes spinCoin {
+      0%   { transform: rotateY(0deg)   scale(0.5); }
+      50%  { transform: rotateY(180deg) scale(1.3); }
+      100% { transform: rotateY(360deg) scale(1);   }
+    }
+    .result-title {
+      font-family: var(--font-pix);
+      font-size: 0.6rem;
+      color: var(--green);
+      letter-spacing: 4px;
+      margin-top: 8px;
+    }
+
+    .result-list { margin-bottom: 14px; }
+
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 2px solid var(--card);
+    }
+    .result-item:last-child { border-bottom: none; }
+
+    .result-name {
+      font-size: 0.95rem;
+      color: var(--cyan);
+      flex: 1;
+      padding-right: 8px;
+    }
+    .result-amount {
+      font-family: var(--font-pix);
+      font-size: clamp(0.9rem, 4vw, 1.1rem);
+      color: var(--yellow);
+      white-space: nowrap;
+    }
+    .result-yen {
+      font-size: 0.65em;
+      margin-right: 2px;
+      color: var(--yellow2);
+    }
+
+    .result-summary {
+      background: var(--card);
+      border-left: 4px solid var(--yellow);
+      padding: 10px 12px;
+      margin-top: 4px;
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--gray);
+      margin-bottom: 5px;
+    }
+    .summary-row:last-child { margin-bottom: 0; }
+    .summary-row.highlight {
+      color: var(--yellow);
+      font-size: 0.88rem;
+      border-top: 1px solid var(--gray);
+      padding-top: 7px;
+      margin-top: 5px;
+    }
+
+    /* Pixel Divider */
+    .px-divider {
+      height: 4px;
+      margin: 14px 0;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--green) 0, var(--green) 6px,
+        transparent 6px, transparent 12px
+      );
+    }
+
+    /* Share Button */
+    .btn-share {
+      width: 100%;
+      padding: 13px;
+      background: #001a22;
+      color: var(--cyan);
+      border: 3px solid var(--cyan);
+      font-family: var(--font-jp);
+      font-size: 0.9rem;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 #000;
+      transition: transform 0.05s, box-shadow 0.05s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-share:active {
+      transform: translate(3px, 3px);
+      box-shadow: 0 0 0 #000;
+    }
+
+    /* ===============================
+       Footer
+    =============================== */
+    .footer {
+      text-align: center;
+      padding: 24px 16px;
+      color: var(--gray);
+      font-family: var(--font-pix);
+      font-size: 0.42rem;
+      letter-spacing: 1px;
+      border-top: 2px solid var(--card);
+    }
+
+    /* ===============================
+       Toast Notification
+    =============================== */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--green);
+      color: #000;
+      padding: 10px 20px;
+      font-family: var(--font-jp);
+      font-size: 0.9rem;
+      font-weight: bold;
+      z-index: 10000;
+      transition: transform 0.3s ease;
+      white-space: nowrap;
+      box-shadow: 4px 4px 0 #000;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ===============================
+       Utilities
+    =============================== */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--yellow); }
+  </style>
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header class="header">
+  <div class="header-bg-pixels"></div>
+  <h1>★ WariCan！★</h1>
+  <div class="header-sub">RETRO BILL SPLIT CALCULATOR</div>
+  <div class="header-coins">
+    <span class="hcoin">🪙</span>
+    <span class="hcoin">🪙</span>
+    <span class="hcoin">🪙</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Install Banner -->
+  <div class="install-banner" id="installBanner">
+    <span class="install-text">📱 ホーム画面に追加できます！</span>
+    <button class="btn-install-small" id="installBtn">追加</button>
+    <button class="btn-dismiss" onclick="dismissInstall()">✕</button>
+  </div>
+
+  <!-- Ad Slot (Top) -->
+  <div class="ad-slot" id="adTop">
+    <ins class="adsbygoogle"
+         style="display:block;width:100%;min-height:50px"
+         data-ad-client="ca-pub-9112642831900552"
+         data-ad-slot="1234567890"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <!-- AdSense非承認時はフォールバック表示 -->
+    <div class="ad-placeholder" id="adTopFallback">AD</div>
+  </div>
+
+  <!-- ===================== SETTINGS ===================== -->
+  <div class="settings-panel">
+    <div class="section-title">⚙ SETTINGS</div>
+
+    <div class="settings-row">
+      <span class="settings-label">消費税</span>
+      <div class="btn-group" id="taxGroup">
+        <button class="btn-px active" onclick="setSetting('tax', 0, this)">税なし</button>
+        <button class="btn-px"        onclick="setSetting('tax', 0.08, this)">8%</button>
+        <button class="btn-px"        onclick="setSetting('tax', 0.10, this)">10%</button>
+      </div>
+    </div>
+
+    <div class="settings-row">
+      <span class="settings-label">端数処理</span>
+      <div class="btn-group" id="roundGroup">
+        <button class="btn-px"        onclick="setSetting('round', 'floor', this)">切捨</button>
+        <button class="btn-px active" onclick="setSetting('round', 'round', this)">四捨五入</button>
+        <button class="btn-px"        onclick="setSetting('round', 'ceil',  this)">切上</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== MODE TABS ===================== -->
+  <div class="mode-tabs" role="tablist">
+    <button class="mode-tab active" role="tab" onclick="setMode('equal', this)">平等割り</button>
+    <button class="mode-tab"        role="tab" onclick="setMode('drinks', this)">飲み物別</button>
+    <button class="mode-tab"        role="tab" onclick="setMode('individual', this)">個別入力</button>
+  </div>
+
+  <!-- ===================== EQUAL SPLIT ===================== -->
+  <div class="mode-panel active" id="panel-equal">
+
+    <div class="input-group">
+      <label class="input-label" for="eq-total">💴 合計金額</label>
+      <div class="input-row">
+        <input type="number" class="px-input" id="eq-total"
+               placeholder="0" min="0" inputmode="decimal">
+        <span class="input-unit">円</span>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label class="input-label" for="eq-people">👥 人数</label>
+      <div class="input-row">
+        <input type="number" class="px-input" id="eq-people"
+               placeholder="2" min="1" max="99" inputmode="numeric" value="2">
+        <span class="input-unit">人</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===================== DRINKS MODE ===================== -->
+  <div class="mode-panel" id="panel-drinks">
+
+    <div class="input-group">
+      <label class="input-label" for="dr-total">💴 合計金額（全体）</label>
+      <div class="input-row">
+        <input type="number" class="px-input" id="dr-total"
+               placeholder="0" min="0" inputmode="decimal">
+        <span class="input-unit">円</span>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label class="input-label" for="dr-drinkers">🍺 飲む人の人数</label>
+      <div class="input-row">
+        <input type="number" class="px-input" id="dr-drinkers"
+               placeholder="2" min="0" max="99" inputmode="numeric" value="2">
+        <span class="input-unit">人</span>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label class="input-label" for="dr-nondrinkers">🍵 飲まない人の人数</label>
+      <div class="input-row">
+        <input type="number" class="px-input" id="dr-nondrinkers"
+               placeholder="0" min="0" max="99" inputmode="numeric" value="0">
+        <span class="input-unit">人</span>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label class="input-label" for="dr-ndamount">💴 飲まない人 1人あたりの負担額</label>
+      <div class="input-row">
+        <input type="number" class="px-input" id="dr-ndamount"
+               placeholder="0" min="0" inputmode="decimal">
+        <span class="input-unit">円</span>
+      </div>
+    </div>
+
+    <div class="info-box">
+      飲まない人が払う金額（食事代など）を入力してください。<br>
+      残りの金額を、お酒を飲む人で均等に割ります。
+    </div>
+
+  </div>
+
+  <!-- ===================== INDIVIDUAL MODE ===================== -->
+  <div class="mode-panel" id="panel-individual">
+
+    <div class="section-title">👤 個人の注文額</div>
+
+    <div class="person-list" id="personList"></div>
+
+    <button class="btn-add-person" onclick="addPerson()">
+      ＋ 人を追加する
+    </button>
+
+    <div class="shared-section">
+      <div class="shared-label">📋 共通費（全員で均等割り）</div>
+      <div class="input-row">
+        <input type="number" class="px-input" id="ind-shared"
+               placeholder="0" min="0" inputmode="decimal">
+        <span class="input-unit">円</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Error -->
+  <div class="error-msg" id="errorMsg"></div>
+
+  <!-- ===================== CALCULATE BUTTON ===================== -->
+  <button class="btn-calculate" id="calcBtn" onclick="calculate()">
+    ▶▶ KEISAN！
+  </button>
+
+  <!-- ===================== RESULTS ===================== -->
+  <div class="results-panel" id="resultsPanel">
+    <div class="result-header">
+      <div class="result-coin" id="resultCoin">💰</div>
+      <div class="result-title">★★ RESULT ★★</div>
+    </div>
+
+    <div class="result-list" id="resultList"></div>
+
+    <div class="result-summary" id="resultSummary"></div>
+
+    <div class="px-divider"></div>
+
+    <button class="btn-share" onclick="shareResult()">
+      📤 結果をシェア・コピー
+    </button>
+  </div>
+
+  <!-- Ad Slot (Bottom) -->
+  <div class="ad-slot">
+    <ins class="adsbygoogle"
+         style="display:block;width:100%;min-height:90px"
+         data-ad-client="ca-pub-9112642831900552"
+         data-ad-slot="0987654321"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <div class="ad-placeholder">AD</div>
+  </div>
+
+  <footer class="footer">
+    <div style="margin-bottom:10px; display:flex; justify-content:center; gap:16px; flex-wrap:wrap;">
+      <a href="privacy.html" style="color:var(--gray); font-size:0.7rem; text-decoration:underline; font-family:var(--font-jp);">プライバシーポリシー</a>
+      <a href="contact.html" style="color:var(--gray); font-size:0.7rem; text-decoration:underline; font-family:var(--font-jp);">お問い合わせ</a>
+    </div>
+    WariCan！ v1.0 &copy; 2025 &nbsp;|&nbsp; MADE WITH ♥ &amp; 8BIT
+  </footer>
+
+</div><!-- /container -->
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===================================================
+   WariCan！ - Main Application Script
+=================================================== */
+
+// ─── State ──────────────────────────────────────
+const state = {
+  tax:     0,
+  round:   'round',
+  mode:    'equal',
+  persons: [],
+};
+
+// ─── Audio Context ──────────────────────────────
+let _audioCtx = null;
+function getAudioCtx() {
+  if (!_audioCtx) {
+    try { _audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+  }
+  return _audioCtx;
+}
+
+function beep(freq, dur, vol = 0.25, type = 'square') {
+  try {
+    const ctx = getAudioCtx();
+    if (!ctx) return;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    gain.gain.setValueAtTime(vol, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + dur);
+  } catch(e) {}
+}
+
+function playClick()   { beep(440, 0.07, 0.2); }
+function playSuccess() {
+  const notes = [523, 659, 784, 1047];
+  notes.forEach((f, i) => setTimeout(() => beep(f, 0.13, 0.22), i * 80));
+}
+function playError()   { [330, 247].forEach((f, i) => setTimeout(() => beep(f, 0.2, 0.2), i * 110)); }
+
+// ─── Settings ───────────────────────────────────
+function setSetting(type, value, btn) {
+  playClick();
+  if (type === 'tax')   { state.tax   = value; activateBtn('taxGroup',   btn); }
+  if (type === 'round') { state.round = value; activateBtn('roundGroup', btn); }
+}
+
+function activateBtn(groupId, btn) {
+  document.querySelectorAll(`#${groupId} .btn-px`).forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function applyRound(v) {
+  if (state.round === 'floor') return Math.floor(v);
+  if (state.round === 'ceil')  return Math.ceil(v);
+  return Math.round(v);
+}
+
+function applyTax(v) { return v * (1 + state.tax); }
+
+// ─── Mode Switching ─────────────────────────────
+function setMode(mode, btn) {
+  playClick();
+  state.mode = mode;
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.mode-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + mode).classList.add('active');
+  hideResults();
+  hideError();
+}
+
+// ─── Individual Mode ────────────────────────────
+function initPersons() {
+  state.persons = [
+    { name: '1人目', amount: '' },
+    { name: '2人目', amount: '' },
+  ];
+  renderPersons();
+}
+
+function renderPersons() {
+  const list = document.getElementById('personList');
+  list.innerHTML = '';
+  state.persons.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'person-item';
+    div.innerHTML = `
+      <input type="text"   class="person-name-input"   placeholder="名前${i+1}"
+             value="${escapeHtml(p.name)}" oninput="state.persons[${i}].name=this.value">
+      <input type="number" class="person-amount-input" placeholder="0" min="0"
+             value="${escapeHtml(String(p.amount))}" inputmode="decimal"
+             oninput="state.persons[${i}].amount=this.value">
+      <span class="input-unit" style="font-size:0.75rem">円</span>
+      ${state.persons.length > 2
+        ? `<button class="btn-remove" onclick="removePerson(${i})">✕</button>`
+        : '<span style="width:28px;flex-shrink:0"></span>'
+      }
+    `;
+    list.appendChild(div);
+  });
+}
+
+function addPerson() {
+  playClick();
+  state.persons.push({ name: `${state.persons.length + 1}人目`, amount: '' });
+  renderPersons();
+}
+
+function removePerson(i) {
+  playClick();
+  state.persons.splice(i, 1);
+  renderPersons();
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── Validation Helpers ─────────────────────────
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.classList.add('show');
+  playError();
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+function hideError() {
+  document.getElementById('errorMsg').classList.remove('show');
+}
+function hideResults() {
+  document.getElementById('resultsPanel').classList.remove('show');
+}
+
+// ─── Main Calculate ─────────────────────────────
+function calculate() {
+  playClick();
+  hideError();
+
+  let results = [], preTaxTotal = 0;
+
+  // ── Equal Split ──
+  if (state.mode === 'equal') {
+    const total  = parseFloat(document.getElementById('eq-total').value);
+    const people = parseInt(document.getElementById('eq-people').value);
+
+    if (!total  || total  <= 0) return showError('⚠ 合計金額を入力してください');
+    if (!people || people <  1) return showError('⚠ 人数を入力してください');
+    if (people  > 99)           return showError('⚠ 人数は99人以下にしてください');
+
+    preTaxTotal = total;
+    const withTax  = applyTax(total);
+    const perPerson = applyRound(withTax / people);
+
+    for (let i = 0; i < people; i++) {
+      results.push({ name: `${i + 1}人目`, amount: perPerson });
+    }
+
+  // ── Drinks Mode ──
+  } else if (state.mode === 'drinks') {
+    const total      = parseFloat(document.getElementById('dr-total').value);
+    const drinkers   = parseInt(document.getElementById('dr-drinkers').value)   || 0;
+    const nonDrink   = parseInt(document.getElementById('dr-nondrinkers').value) || 0;
+    const ndAmount   = parseFloat(document.getElementById('dr-ndamount').value)  || 0;
+
+    if (!total || total <= 0)          return showError('⚠ 合計金額を入力してください');
+    if (drinkers + nonDrink < 1)       return showError('⚠ 人数を入力してください');
+
+    preTaxTotal = total;
+    const withTax    = applyTax(total);
+    const ndTotal    = nonDrink * ndAmount;
+
+    if (ndTotal > withTax)             return showError('⚠ 飲まない人の合計金額が超過しています');
+
+    const drinkShare = drinkers > 0 ? applyRound((withTax - ndTotal) / drinkers) : 0;
+
+    for (let i = 0; i < drinkers;  i++) results.push({ name: `飲む人 ${i + 1}`,    amount: drinkShare });
+    for (let i = 0; i < nonDrink;  i++) results.push({ name: `飲まない人 ${i + 1}`, amount: applyRound(ndAmount) });
+
+  // ── Individual Mode ──
+  } else if (state.mode === 'individual') {
+    const shared = parseFloat(document.getElementById('ind-shared').value) || 0;
+    const n      = state.persons.length;
+
+    const allEmpty = state.persons.every(p => !p.amount || parseFloat(p.amount) <= 0);
+    if (allEmpty && shared <= 0) return showError('⚠ 金額を入力してください');
+
+    // pre-tax raw total
+    preTaxTotal = shared + state.persons.reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
+
+    const withTax    = applyTax(preTaxTotal);
+    const taxFactor  = preTaxTotal > 0 ? withTax / preTaxTotal : 1;
+    const sharedEach = shared / n;
+
+    state.persons.forEach(p => {
+      const base = (parseFloat(p.amount) || 0) + sharedEach;
+      results.push({ name: p.name || '名無し', amount: applyRound(base * taxFactor) });
+    });
+  }
+
+  // ── Render Results ──
+  displayResults(results, preTaxTotal);
+}
+
+// ─── Display Results ────────────────────────────
+function displayResults(results, preTaxTotal) {
+  playSuccess();
+
+  const withTax   = applyTax(preTaxTotal);
+  const taxAmount = withTax - preTaxTotal;
+
+  // Coin animation reset
+  const coin = document.getElementById('resultCoin');
+  coin.style.animation = 'none';
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    coin.style.animation = 'spinCoin 0.8s ease-out';
+  }));
+
+  // Build result list
+  const listEl = document.getElementById('resultList');
+  listEl.innerHTML = '';
+
+  results.forEach((r, i) => {
+    const div = document.createElement('div');
+    div.className = 'result-item';
+    div.innerHTML = `
+      <span class="result-name">${escapeHtml(r.name)}</span>
+      <span class="result-amount">
+        <span class="result-yen">¥</span><span class="num" data-target="${r.amount}">0</span>
+      </span>
+    `;
+    listEl.appendChild(div);
+    // staggered count-up
+    setTimeout(() => countUp(div.querySelector('.num'), r.amount), i * 100);
+  });
+
+  // Summary
+  const roundLabel = { floor: '切り捨て', round: '四捨五入', ceil: '切り上げ' };
+  const taxLabel   = state.tax > 0 ? `消費税（${(state.tax * 100).toFixed(0)}%）込み` : '税なし';
+
+  let html = `
+    <div class="summary-row">
+      <span>税抜き合計</span>
+      <span>¥${fmt(preTaxTotal)}</span>
+    </div>`;
+  if (state.tax > 0) {
+    html += `
+    <div class="summary-row">
+      <span>消費税（${(state.tax * 100).toFixed(0)}%）</span>
+      <span>¥${fmt(taxAmount)}</span>
+    </div>`;
+  }
+  html += `
+    <div class="summary-row highlight">
+      <span>税込み合計</span>
+      <span>¥${fmt(withTax)}</span>
+    </div>
+    <div class="summary-row">
+      <span>端数処理</span>
+      <span>${roundLabel[state.round]}</span>
+    </div>`;
+  document.getElementById('resultSummary').innerHTML = html;
+
+  const panel = document.getElementById('resultsPanel');
+  panel.classList.remove('show');
+  requestAnimationFrame(() => {
+    panel.classList.add('show');
+    setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+  });
+}
+
+// ─── Count-Up Animation ─────────────────────────
+function countUp(el, target) {
+  const dur = 700;
+  const start = performance.now();
+  function frame(now) {
+    const t = Math.min((now - start) / dur, 1);
+    const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+    el.textContent = fmt(Math.round(eased * target));
+    if (t < 1) requestAnimationFrame(frame);
+    else el.textContent = fmt(target);
+  }
+  requestAnimationFrame(frame);
+}
+
+function fmt(n) { return Math.round(n).toLocaleString('ja-JP'); }
+
+// ─── Share Result ───────────────────────────────
+async function shareResult() {
+  playClick();
+  const items = document.querySelectorAll('#resultList .result-item');
+  let text = '【WariCan！割り勘結果】\n';
+  items.forEach(item => {
+    const name   = item.querySelector('.result-name').textContent;
+    const amount = item.querySelector('.num').textContent;
+    text += `${name}：¥${amount}\n`;
+  });
+  const summaryRows = document.querySelectorAll('#resultSummary .summary-row');
+  text += '\n';
+  summaryRows.forEach(row => {
+    const cols = row.querySelectorAll('span');
+    if (cols.length === 2) text += `${cols[0].textContent}：${cols[1].textContent}\n`;
+  });
+  text += '\n🎮 WariCan！で計算 https://example.com';
+
+  if (navigator.share) {
+    try { await navigator.share({ title: 'WariCan！割り勘結果', text }); return; }
+    catch(e) { if (e.name === 'AbortError') return; }
+  }
+  // Fallback: clipboard
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast('クリップボードにコピーしました！');
+  } catch(e) {
+    showToast('コピーに失敗しました');
+  }
+}
+
+// ─── Toast ──────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ─── PWA Install ────────────────────────────────
+let _deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  _deferredPrompt = e;
+  document.getElementById('installBanner').classList.add('show');
+});
+
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if (!_deferredPrompt) return;
+  _deferredPrompt.prompt();
+  await _deferredPrompt.userChoice;
+  _deferredPrompt = null;
+  document.getElementById('installBanner').classList.remove('show');
+});
+
+function dismissInstall() {
+  document.getElementById('installBanner').classList.remove('show');
+  sessionStorage.setItem('installDismissed', '1');
+}
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('installBanner').classList.remove('show');
+  showToast('インストール完了！');
+});
+
+// ─── Service Worker ──────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .catch(() => {});
+  });
+}
+
+// ─── AdSense Init ────────────────────────────────
+// push()は各<ins>タグ直後のインラインscriptで実行済みのため不要
+
+// ─── Generate PWA Icon PNGs (runs once, for SW pre-cache) ───
+function generateIconPng(size) {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  const img = new Image();
+  img.onload = () => {
+    ctx.drawImage(img, 0, 0, size, size);
+    canvas.toBlob(blob => {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      // Cache into service worker cache
+      if ('caches' in window) {
+        caches.open('warican-v1').then(c => {
+          c.put(`./icon-${size}.png`, new Response(blob, { headers: { 'Content-Type': 'image/png' } }));
+        });
+      }
+    }, 'image/png');
+  };
+  img.src = './icon.svg';
+}
+if ('caches' in window) {
+  generateIconPng(192);
+  generateIconPng(512);
+}
+
+// ─── Init ────────────────────────────────────────
+initPersons();
+</script>
+</body>
+</html>
