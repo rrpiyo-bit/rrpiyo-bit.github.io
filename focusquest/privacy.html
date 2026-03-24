@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0a14">
+  <meta name="description" content="FOCUS QUEST プライバシーポリシー">
+  <title>プライバシーポリシー - FOCUS QUEST</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:          #08080f;
+      --panel-bg:    #110e07;
+      --panel-bg2:   #1a1508;
+      --gold:        #c8a84b;
+      --gold-bright: #ffd700;
+      --gold-dark:   #6d531e;
+      --text:        #f0e0c0;
+      --text-gold:   #ffd700;
+      --text-dim:    #6a5535;
+      --break:       #3da876;
+      --break-dark:  #1b4332;
+      --long:        #7ab8dc;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Press Start 2P', 'Courier New', monospace;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ---- BG layers ---- */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 50% -10%, rgba(100,80,0,.15) 0%, transparent 70%),
+        linear-gradient(180deg, #0c0c22 0%, #08080f 40%);
+    }
+    body::after {
+      content: '';
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    .wrapper {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; align-items: center;
+      max-width: 680px; margin: 0 auto; padding: 0 8px 48px;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      width: 100%; text-align: center;
+      padding: 20px 16px 16px;
+      background: linear-gradient(180deg, #0c0a00 0%, transparent 100%);
+      border-bottom: 4px solid var(--gold);
+      position: relative; overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(90deg,
+        transparent, rgba(200,168,75,.05) 50%, transparent);
+      animation: shimmer 5s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      0%,100% { opacity: 0; transform: translateX(-100%); }
+      50%      { opacity: 1; transform: translateX(100%); }
+    }
+    .back-link {
+      display: inline-block;
+      font-size: 7px; color: var(--text-dim);
+      text-decoration: none; margin-bottom: 14px;
+      border: 2px solid var(--gold-dark);
+      padding: 6px 10px;
+      transition: color .2s, border-color .2s;
+    }
+    .back-link:hover { color: var(--text-gold); border-color: var(--gold); }
+
+    .header-deco {
+      display: flex; align-items: center;
+      justify-content: center; gap: 10px; margin-bottom: 8px;
+    }
+    .icon-spin {
+      font-size: 18px;
+      display: inline-block;
+      animation: sway 3s ease-in-out infinite;
+    }
+    @keyframes sway {
+      0%,100% { transform: rotate(-6deg); }
+      50%      { transform: rotate(6deg) translateY(-3px); }
+    }
+    .header h1 {
+      font-size: clamp(10px, 3.5vw, 15px);
+      color: var(--text-gold);
+      text-shadow: 2px 2px 0 #8b4500, 4px 4px 0 #4a2500, 0 0 14px rgba(255,215,0,.3);
+      letter-spacing: 2px; line-height: 1.6;
+    }
+    .header-sub {
+      font-size: 6px; color: var(--text-dim);
+      letter-spacing: 1px; margin-top: 6px;
+    }
+    .header-line {
+      height: 3px; margin-top: 14px;
+      background: linear-gradient(90deg,
+        transparent, var(--gold-dark), var(--gold-bright), var(--gold-dark), transparent);
+    }
+
+    /* ===== RPG PANEL ===== */
+    .rpg-panel {
+      width: 100%;
+      background: var(--panel-bg);
+      border: 4px solid var(--gold);
+      position: relative; margin: 8px 0; overflow: visible;
+    }
+    .rpg-panel::before {
+      content: '';
+      position: absolute; inset: 4px;
+      border: 2px solid var(--gold-dark);
+      pointer-events: none; z-index: 2;
+    }
+    .rpg-panel::after {
+      content: '';
+      position: absolute; top: 6px; left: 6px;
+      width: 100%; height: 100%;
+      background: #000; z-index: -1;
+    }
+    .rpg-panel .jc {
+      position: absolute; width: 10px; height: 10px;
+      border: 2px solid var(--gold); background: var(--bg); z-index: 4;
+    }
+    .jc.tl { top: -1px; left: -1px; }
+    .jc.tr { top: -1px; right: -1px; }
+    .jc.bl { bottom: -1px; left: -1px; }
+    .jc.br { bottom: -1px; right: -1px; }
+
+    /* ===== SECTION TITLE ===== */
+    .section-title {
+      font-size: 8px; color: var(--text-gold);
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 14px;
+    }
+    .section-title::after {
+      content: ''; flex: 1; height: 2px;
+      background: linear-gradient(90deg, var(--gold-dark), transparent);
+    }
+    .section-title .icon { font-size: 14px; flex-shrink: 0; }
+
+    /* ===== POLICY BODY ===== */
+    .policy-body {
+      padding: 18px 20px 20px;
+    }
+
+    /* Intro box (message window style) */
+    .intro-box {
+      background: var(--panel-bg2);
+      border: 2px solid var(--gold-dark);
+      padding: 14px 16px; margin-bottom: 20px;
+      position: relative;
+    }
+    .intro-box::before {
+      content: '▶ MESSAGE';
+      display: block;
+      font-size: 6px; color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .intro-box p {
+      font-size: 7px; color: var(--text);
+      line-height: 2.4;
+    }
+
+    /* Policy section */
+    .pol-section {
+      margin-bottom: 28px;
+    }
+    .pol-section:last-child { margin-bottom: 0; }
+
+    .pol-lead {
+      font-size: 7px; color: var(--text);
+      line-height: 2.4; margin-bottom: 12px;
+    }
+
+    /* Item list (RPG menu style) */
+    .pol-list {
+      list-style: none; padding: 0;
+    }
+    .pol-list li {
+      font-size: 7px; color: var(--text);
+      line-height: 2.4; padding: 8px 0 8px 20px;
+      border-bottom: 1px solid var(--gold-dark);
+      position: relative;
+    }
+    .pol-list li:last-child { border-bottom: none; }
+    .pol-list li::before {
+      content: '▷';
+      position: absolute; left: 0; top: 8px;
+      color: var(--text-dim); font-size: 8px;
+    }
+
+    /* Highlight box */
+    .highlight-box {
+      background: rgba(61,168,118,.08);
+      border: 2px solid var(--break-dark);
+      border-left: 4px solid var(--break);
+      padding: 12px 14px; margin: 10px 0;
+    }
+    .highlight-box p {
+      font-size: 7px; color: var(--text);
+      line-height: 2.4;
+    }
+    .highlight-box .hl-label {
+      font-size: 6px; color: var(--break);
+      margin-bottom: 6px;
+    }
+
+    /* Info box */
+    .info-box {
+      background: rgba(122,184,220,.07);
+      border: 2px solid var(--long-dark);
+      border-left: 4px solid var(--long);
+      padding: 12px 14px; margin: 10px 0;
+    }
+    .info-box p {
+      font-size: 7px; color: var(--text);
+      line-height: 2.4;
+    }
+    .info-box .hl-label {
+      font-size: 6px; color: var(--long);
+      margin-bottom: 6px;
+    }
+
+    /* External link */
+    .ext-link {
+      display: inline-block;
+      color: var(--long); text-decoration: none;
+      border-bottom: 1px solid var(--long-dark);
+      font-size: 7px; word-break: break-all;
+      transition: color .2s;
+    }
+    .ext-link:hover { color: var(--gold-bright); }
+
+    /* Date badge */
+    .date-badge {
+      display: inline-block;
+      font-size: 6px; color: var(--text-dim);
+      border: 2px solid var(--gold-dark);
+      padding: 4px 10px; margin-top: 16px;
+    }
+
+    /* ===== CONTACT MINI ===== */
+    .contact-mini {
+      background: var(--panel-bg2);
+      border: 2px solid var(--gold-dark);
+      padding: 14px 16px; margin-top: 10px;
+    }
+    .contact-mini .cm-label {
+      font-size: 6px; color: var(--text-dim); margin-bottom: 10px;
+    }
+    .x-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 7px; color: #1da1f2;
+      background: #050f1c; border: 2px solid #1da1f2;
+      padding: 8px 14px; text-decoration: none;
+      position: relative; transition: background .2s;
+    }
+    .x-btn:hover { background: #0a1f3a; }
+    .x-btn::after {
+      content: '';
+      position: absolute; bottom: -3px; right: -3px;
+      left: 3px; top: 3px; background: #000; z-index: -1;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      width: 100%; text-align: center;
+      padding: 20px; font-size: 5px;
+      color: var(--text-dim); line-height: 2.4;
+    }
+    .footer a {
+      color: var(--text-dim); text-decoration: none;
+      border-bottom: 1px solid var(--gold-dark);
+    }
+    .footer a:hover { color: var(--text-gold); }
+
+    /* ===== NAV BAR ===== */
+    .nav-bar {
+      width: 100%; display: flex; gap: 6px;
+      padding: 10px 0 2px; flex-wrap: wrap;
+      justify-content: center;
+    }
+    .nav-btn {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 6px; padding: 7px 10px;
+      background: var(--panel-bg); color: var(--text-dim);
+      border: 2px solid var(--gold-dark);
+      text-decoration: none;
+      transition: color .2s, border-color .2s;
+    }
+    .nav-btn:hover { color: var(--text-gold); border-color: var(--gold); }
+    .nav-btn.active { color: var(--text-gold); border-color: var(--gold); }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header class="header">
+    <a class="back-link" href="index.html">◀ FOCUS QUEST へ戻る</a>
+    <div class="header-deco">
+      <span class="icon-spin">📜</span>
+      <h1>PRIVACY POLICY</h1>
+      <span class="icon-spin" style="animation-delay:-1.5s">📜</span>
+    </div>
+    <div class="header-sub">プライバシーポリシー</div>
+    <div class="header-line"></div>
+  </header>
+
+  <!-- NAV -->
+  <nav class="nav-bar">
+    <a class="nav-btn" href="index.html">⚔ タイマー</a>
+    <a class="nav-btn active" href="privacy.html">📜 プライバシー</a>
+    <a class="nav-btn" href="contact.html">💬 お問い合わせ</a>
+  </nav>
+
+  <!-- MAIN PANEL -->
+  <div class="rpg-panel" style="margin-top:10px">
+    <div class="jc tl"></div><div class="jc tr"></div>
+    <div class="jc bl"></div><div class="jc br"></div>
+    <div class="policy-body">
+
+      <!-- Intro -->
+      <div class="intro-box">
+        <p>
+          FOCUS QUEST（以下「当サービス」）は、ユーザーの個人情報・プライバシーを適切に保護することをお約束します。本ページでは、当サービスにおける情報の取り扱いについて説明します。
+        </p>
+      </div>
+
+      <!-- 1. 広告配信 -->
+      <div class="pol-section">
+        <div class="section-title">
+          <span class="icon">📢</span>
+          <span>01. 広告の配信について</span>
+        </div>
+        <p class="pol-lead">
+          当サービスでは、Google AdSense を使用して広告を配信しています。
+        </p>
+        <div class="highlight-box">
+          <div class="hl-label">▶ GOOGLE ADSENSE</div>
+          <p>
+            Google AdSense は、ユーザーの興味に基づいた広告を表示するために Cookie を使用します。Google による広告 Cookie の使用は、
+            <a class="ext-link" href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">Google の広告に関するポリシー</a>
+            に従って行われます。
+          </p>
+        </div>
+        <ul class="pol-list" style="margin-top:10px">
+          <li>広告配信にはユーザーの行動履歴が利用される場合があります</li>
+          <li>パーソナライズ広告はブラウザの設定から無効にできます</li>
+          <li>第三者配信業者が広告を掲載する場合があります</li>
+          <li>
+            広告のオプトアウト：
+            <a class="ext-link" href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google 広告設定</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- 2. Cookie -->
+      <div class="pol-section">
+        <div class="section-title">
+          <span class="icon">🍪</span>
+          <span>02. Cookieの使用について</span>
+        </div>
+        <p class="pol-lead">
+          当サービスは Cookie および類似の技術を使用しています。
+        </p>
+        <ul class="pol-list">
+          <li>タイマー設定・統計データの保存（localStorage）</li>
+          <li>広告配信の最適化（Google AdSense Cookie）</li>
+          <li>アクセス解析（Google Analytics Cookie）</li>
+          <li>セッション管理・ユーザー設定の保持</li>
+        </ul>
+        <div class="info-box" style="margin-top:12px">
+          <div class="hl-label">▶ OPT-OUT</div>
+          <p>
+            ブラウザの設定から Cookie を無効にできます。ただし、一部機能（タイマー設定の保存等）が利用できなくなる場合があります。
+          </p>
+        </div>
+      </div>
+
+      <!-- 3. アクセス解析 -->
+      <div class="pol-section">
+        <div class="section-title">
+          <span class="icon">📊</span>
+          <span>03. アクセス解析について</span>
+        </div>
+        <p class="pol-lead">
+          当サービスでは、利用状況の分析・改善のために Google Analytics を使用しています。
+        </p>
+        <div class="highlight-box">
+          <div class="hl-label">▶ GOOGLE ANALYTICS</div>
+          <p>
+            Google Analytics は Cookie を使用してユーザーの行動を収集・分析します。収集されるデータは匿名化されており、個人を特定する情報は含まれません。
+          </p>
+        </div>
+        <ul class="pol-list" style="margin-top:10px">
+          <li>収集情報：アクセスページ、滞在時間、使用端末・OS・ブラウザ</li>
+          <li>収集情報：参照元URL、おおよその地域情報</li>
+          <li>個人を特定できる情報は収集しません</li>
+          <li>
+            詳細：
+            <a class="ext-link" href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google プライバシーポリシー</a>
+          </li>
+          <li>
+            オプトアウト：
+            <a class="ext-link" href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google Analytics オプトアウト アドオン</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- 4. 個人情報 -->
+      <div class="pol-section">
+        <div class="section-title">
+          <span class="icon">🛡️</span>
+          <span>04. 個人情報の取り扱い</span>
+        </div>
+        <p class="pol-lead">
+          当サービスは、以下の方針に従って個人情報を取り扱います。
+        </p>
+        <ul class="pol-list">
+          <li>ユーザーが入力・設定した情報はデバイス内にのみ保存されます（localStorage）</li>
+          <li>サーバーへの個人情報の送信・収集は行いません</li>
+          <li>第三者への個人情報の提供・販売は行いません</li>
+          <li>法令に基づく場合を除き、個人情報を開示しません</li>
+          <li>収集した情報はサービス改善目的にのみ使用します</li>
+        </ul>
+      </div>
+
+      <!-- 5. 免責事項 -->
+      <div class="pol-section">
+        <div class="section-title">
+          <span class="icon">⚖️</span>
+          <span>05. 免責事項</span>
+        </div>
+        <ul class="pol-list">
+          <li>当サービスの利用によって生じた損害について、運営者は責任を負いません</li>
+          <li>外部リンク先のコンテンツについて、当サービスは責任を負いません</li>
+          <li>サービスの内容は予告なく変更・停止する場合があります</li>
+          <li>本ポリシーは予告なく変更する場合があります</li>
+        </ul>
+      </div>
+
+      <!-- 6. 運営者・お問い合わせ -->
+      <div class="pol-section">
+        <div class="section-title">
+          <span class="icon">📬</span>
+          <span>06. 運営者・お問い合わせ</span>
+        </div>
+        <ul class="pol-list">
+          <li>運営者：FOCUS QUEST 運営事務局</li>
+          <li>サービス名：FOCUS QUEST（RPGポモドーロタイマー）</li>
+          <li>
+            お問い合わせ先：X（旧Twitter）
+            <a class="ext-link" href="https://twitter.com/retro_app_jp" target="_blank" rel="noopener">@retro_app_jp</a>
+          </li>
+        </ul>
+        <div class="contact-mini" style="margin-top:14px">
+          <div class="cm-label">▶ X (Twitter) でお問い合わせ</div>
+          <a class="x-btn" href="https://twitter.com/retro_app_jp" target="_blank" rel="noopener">
+            <span>𝕏</span>
+            <span>@retro_app_jp</span>
+          </a>
+        </div>
+        <div class="date-badge">最終更新：2024年1月</div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div>FOCUS QUEST v1.0.0</div>
+    <div style="margin-top:6px">
+      <a href="index.html">タイマー</a>
+      &nbsp;|&nbsp;
+      <a href="privacy.html">プライバシーポリシー</a>
+      &nbsp;|&nbsp;
+      <a href="contact.html">お問い合わせ</a>
+    </div>
+    <div style="margin-top:8px">⚔ FOCUS QUEST 運営事務局 ⚔</div>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0a14">
+  <meta name="description" content="FOCUS QUEST お問い合わせ">
+  <title>お問い合わせ - FOCUS QUEST</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:          #08080f;
+      --panel-bg:    #110e07;
+      --panel-bg2:   #1a1508;
+      --gold:        #c8a84b;
+      --gold-bright: #ffd700;
+      --gold-dark:   #6d531e;
+      --text:        #f0e0c0;
+      --text-gold:   #ffd700;
+      --text-dim:    #6a5535;
+      --work:        #e06020;
+      --work-dark:   #7a2a00;
+      --break:       #3da876;
+      --break-dark:  #1b4332;
+      --long:        #7ab8dc;
+      --long-dark:   #1d3557;
+      --x-blue:      #1da1f2;
+      --form-green:  #34a853;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Press Start 2P', 'Courier New', monospace;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 40% at 50% -10%, rgba(100,80,0,.15) 0%, transparent 70%),
+        linear-gradient(180deg, #0c0c22 0%, #08080f 40%);
+    }
+    body::after {
+      content: '';
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    .wrapper {
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; align-items: center;
+      max-width: 520px; margin: 0 auto; padding: 0 8px 48px;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      width: 100%; text-align: center;
+      padding: 20px 16px 16px;
+      background: linear-gradient(180deg, #0c0a00 0%, transparent 100%);
+      border-bottom: 4px solid var(--gold);
+      position: relative; overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(90deg,
+        transparent, rgba(200,168,75,.05) 50%, transparent);
+      animation: shimmer 5s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      0%,100% { opacity: 0; transform: translateX(-100%); }
+      50%      { opacity: 1; transform: translateX(100%); }
+    }
+    .back-link {
+      display: inline-block; font-size: 7px;
+      color: var(--text-dim); text-decoration: none;
+      border: 2px solid var(--gold-dark); padding: 6px 10px;
+      margin-bottom: 14px; transition: color .2s, border-color .2s;
+    }
+    .back-link:hover { color: var(--text-gold); border-color: var(--gold); }
+
+    .header-deco {
+      display: flex; align-items: center;
+      justify-content: center; gap: 10px; margin-bottom: 8px;
+    }
+    .icon-anim {
+      font-size: 20px; display: inline-block;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    .icon-anim:last-child { animation-delay: -1s; }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-6px); }
+    }
+    .header h1 {
+      font-size: clamp(10px, 3.5vw, 15px); color: var(--text-gold);
+      text-shadow: 2px 2px 0 #8b4500, 4px 4px 0 #4a2500, 0 0 14px rgba(255,215,0,.3);
+      letter-spacing: 2px; line-height: 1.6;
+    }
+    .header-sub {
+      font-size: 6px; color: var(--text-dim);
+      letter-spacing: 1px; margin-top: 6px;
+    }
+    .header-line {
+      height: 3px; margin-top: 14px;
+      background: linear-gradient(90deg,
+        transparent, var(--gold-dark), var(--gold-bright), var(--gold-dark), transparent);
+    }
+
+    /* ===== NAV ===== */
+    .nav-bar {
+      width: 100%; display: flex; gap: 6px;
+      padding: 10px 0 2px; flex-wrap: wrap; justify-content: center;
+    }
+    .nav-btn {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 6px; padding: 7px 10px;
+      background: var(--panel-bg); color: var(--text-dim);
+      border: 2px solid var(--gold-dark); text-decoration: none;
+      transition: color .2s, border-color .2s;
+    }
+    .nav-btn:hover  { color: var(--text-gold); border-color: var(--gold); }
+    .nav-btn.active { color: var(--text-gold); border-color: var(--gold); }
+
+    /* ===== RPG PANEL ===== */
+    .rpg-panel {
+      width: 100%; background: var(--panel-bg);
+      border: 4px solid var(--gold);
+      position: relative; margin: 8px 0; overflow: visible;
+    }
+    .rpg-panel::before {
+      content: ''; position: absolute; inset: 4px;
+      border: 2px solid var(--gold-dark); pointer-events: none; z-index: 2;
+    }
+    .rpg-panel::after {
+      content: ''; position: absolute; top: 6px; left: 6px;
+      width: 100%; height: 100%; background: #000; z-index: -1;
+    }
+    .rpg-panel .jc {
+      position: absolute; width: 10px; height: 10px;
+      border: 2px solid var(--gold); background: var(--bg); z-index: 4;
+    }
+    .jc.tl { top: -1px; left: -1px; }
+    .jc.tr { top: -1px; right: -1px; }
+    .jc.bl { bottom: -1px; left: -1px; }
+    .jc.br { bottom: -1px; right: -1px; }
+
+    /* ===== MESSAGE WINDOW (intro) ===== */
+    .msg-window {
+      padding: 16px 20px 18px;
+    }
+    .msg-head {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 6px; color: var(--text-dim); margin-bottom: 10px;
+    }
+    .msg-tri {
+      display: inline-block; flex-shrink: 0;
+      width: 0; height: 0; border-style: solid;
+      border-width: 5px 0 5px 8px;
+      border-color: transparent transparent transparent var(--gold);
+    }
+    .msg-text {
+      font-size: 8px; color: var(--text);
+      line-height: 2.4;
+    }
+    .cursor {
+      display: inline-block; width: 8px; height: 14px;
+      background: var(--text);
+      animation: blink .8s step-end infinite;
+      vertical-align: bottom; margin-left: 3px;
+    }
+    @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+
+    /* ===== CONTACT CARDS ===== */
+    .contact-body { padding: 16px 20px 20px; }
+
+    .section-title {
+      font-size: 8px; color: var(--text-gold);
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 16px;
+    }
+    .section-title::after {
+      content: ''; flex: 1; height: 2px;
+      background: linear-gradient(90deg, var(--gold-dark), transparent);
+    }
+
+    /* Contact card */
+    .contact-card {
+      background: var(--panel-bg2);
+      border: 3px solid var(--gold-dark);
+      padding: 18px 18px 20px;
+      margin-bottom: 16px;
+      position: relative;
+      transition: border-color .2s;
+    }
+    .contact-card:last-child { margin-bottom: 0; }
+    .contact-card:hover { border-color: var(--gold); }
+
+    /* Card number badge */
+    .card-num {
+      position: absolute; top: -12px; left: 14px;
+      font-size: 7px; color: var(--bg);
+      background: var(--gold);
+      padding: 3px 10px;
+    }
+
+    .card-title {
+      font-size: 9px; margin-bottom: 10px;
+    }
+    .card-title.x     { color: var(--x-blue); }
+    .card-title.form  { color: var(--form-green); }
+
+    .card-desc {
+      font-size: 7px; color: var(--text-dim);
+      line-height: 2.4; margin-bottom: 16px;
+    }
+
+    /* Tags */
+    .tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+    .tag {
+      font-size: 6px; padding: 4px 8px;
+      border: 2px solid; display: inline-block;
+    }
+    .tag.blue  { color: var(--x-blue);    border-color: #0a4a6e; background: rgba(29,161,242,.08); }
+    .tag.green { color: var(--form-green); border-color: #1a4a28; background: rgba(52,168,83,.08); }
+    .tag.gold  { color: var(--text-gold);  border-color: var(--gold-dark); background: rgba(200,168,75,.06); }
+
+    /* Action button */
+    .action-btn {
+      display: flex; align-items: center;
+      justify-content: center; gap: 10px;
+      width: 100%; padding: 14px 16px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px; text-decoration: none;
+      cursor: pointer; border: 3px solid;
+      position: relative;
+      transition: background .2s, filter .2s;
+    }
+    .action-btn::after {
+      content: '';
+      position: absolute; bottom: -5px; right: -5px;
+      left: 5px; top: 5px; background: #000; z-index: -1;
+    }
+    .action-btn:active { transform: translate(4px,4px); }
+    .action-btn:active::after { display: none; }
+
+    .btn-x {
+      color: var(--x-blue);
+      background: #04090f;
+      border-color: var(--x-blue);
+    }
+    .btn-x:hover { background: #081525; filter: brightness(1.1); }
+
+    .btn-form {
+      color: var(--form-green);
+      background: #030d05;
+      border-color: var(--form-green);
+    }
+    .btn-form:hover { background: #061509; filter: brightness(1.1); }
+
+    .btn-icon { font-size: 16px; flex-shrink: 0; }
+
+    .btn-arrow {
+      margin-left: auto; font-size: 10px;
+      color: inherit; opacity: .5;
+    }
+
+    /* Step guide */
+    .step-guide {
+      margin-top: 14px;
+      border-top: 2px dashed var(--gold-dark);
+      padding-top: 12px;
+    }
+    .step-guide-title {
+      font-size: 6px; color: var(--text-dim); margin-bottom: 10px;
+    }
+    .steps { list-style: none; }
+    .steps li {
+      font-size: 6px; color: var(--text-dim);
+      line-height: 2.2; padding: 4px 0 4px 18px;
+      position: relative;
+    }
+    .steps li::before {
+      content: attr(data-n);
+      position: absolute; left: 0; top: 4px;
+      color: var(--text-gold); font-size: 7px;
+    }
+
+    /* ===== INFO PANEL ===== */
+    .info-panel { padding: 14px 20px; }
+    .info-row {
+      display: flex; gap: 10px;
+      font-size: 7px; padding: 8px 0;
+      border-bottom: 1px solid var(--gold-dark);
+      align-items: flex-start;
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-key { color: var(--text-dim); flex-shrink: 0; min-width: 80px; }
+    .info-val { color: var(--text); line-height: 2; }
+    .info-val a {
+      color: var(--x-blue); text-decoration: none;
+      border-bottom: 1px solid #0a4a6e;
+    }
+    .info-val a:hover { color: var(--gold-bright); }
+
+    /* ===== NOTICE BOX ===== */
+    .notice-box {
+      width: 100%; margin: 6px 0;
+      background: rgba(224,96,32,.07);
+      border: 2px solid var(--work-dark);
+      border-left: 4px solid var(--work);
+      padding: 12px 14px;
+    }
+    .notice-title { font-size: 6px; color: var(--work); margin-bottom: 8px; }
+    .notice-body  { font-size: 7px; color: var(--text-dim); line-height: 2.2; }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      width: 100%; text-align: center;
+      padding: 20px; font-size: 5px;
+      color: var(--text-dim); line-height: 2.4;
+    }
+    .footer a {
+      color: var(--text-dim); text-decoration: none;
+      border-bottom: 1px solid var(--gold-dark);
+    }
+    .footer a:hover { color: var(--text-gold); }
+
+    /* ===== PIXEL DIVIDER ===== */
+    .pixel-div {
+      width: 100%; height: 4px; margin: 4px 0;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--gold-dark) 0px, var(--gold-dark) 8px,
+        transparent 8px, transparent 16px);
+      opacity: .4;
+    }
+
+    /* ===== RESPONSE TIME ===== */
+    .resp-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 6px; color: var(--break);
+      border: 2px solid var(--break-dark);
+      background: rgba(61,168,118,.07);
+      padding: 5px 10px; margin-top: 4px;
+    }
+    .resp-dot {
+      width: 7px; height: 7px;
+      background: var(--break);
+      border-radius: 0;
+      animation: respPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes respPulse {
+      0%,100% { opacity:1; transform: scale(1); }
+      50%      { opacity:.4; transform: scale(.7); }
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header class="header">
+    <a class="back-link" href="index.html">◀ FOCUS QUEST へ戻る</a>
+    <div class="header-deco">
+      <span class="icon-anim">💬</span>
+      <h1>CONTACT</h1>
+      <span class="icon-anim">📨</span>
+    </div>
+    <div class="header-sub">お問い合わせ</div>
+    <div class="header-line"></div>
+  </header>
+
+  <!-- NAV -->
+  <nav class="nav-bar">
+    <a class="nav-btn" href="index.html">⚔ タイマー</a>
+    <a class="nav-btn" href="privacy.html">📜 プライバシー</a>
+    <a class="nav-btn active" href="contact.html">💬 お問い合わせ</a>
+  </nav>
+
+  <!-- MESSAGE WINDOW -->
+  <div class="rpg-panel" style="margin-top:10px">
+    <div class="jc tl"></div><div class="jc tr"></div>
+    <div class="jc bl"></div><div class="jc br"></div>
+    <div class="msg-window">
+      <div class="msg-head">
+        <span class="msg-tri"></span>
+        <span>MESSAGE</span>
+      </div>
+      <div class="msg-text">
+        冒険者よ、何かお困りか？<br>
+        バグの報告・ご意見・ご感想など<br>
+        お気軽にお声がけくだされ！<span class="cursor"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTICE -->
+  <div class="notice-box">
+    <div class="notice-title">⚠ ご確認ください</div>
+    <div class="notice-body">
+      ご返信はできる限り対応しますが、状況によりお時間をいただく場合があります。
+      個人情報や機密情報は送信しないようお願いします。
+    </div>
+  </div>
+
+  <!-- CONTACT METHODS -->
+  <div class="rpg-panel">
+    <div class="jc tl"></div><div class="jc tr"></div>
+    <div class="jc bl"></div><div class="jc br"></div>
+    <div class="contact-body">
+      <div class="section-title">📬 お問い合わせ方法を選択</div>
+
+      <!-- Card 01: X (Twitter) DM -->
+      <div class="contact-card">
+        <div class="card-num">01</div>
+        <div class="card-title x">𝕏 X (Twitter) DM</div>
+        <div class="card-desc">
+          X（旧Twitter）のダイレクトメッセージでお問い合わせいただけます。
+          手軽にお気軽にどうぞ！
+        </div>
+        <div class="tag-row">
+          <span class="tag blue">💬 DM対応</span>
+          <span class="tag gold">⚡ 比較的早め</span>
+          <span class="tag blue">📱 スマホOK</span>
+        </div>
+        <a class="action-btn btn-x"
+           href="https://twitter.com/retro_app_jp"
+           target="_blank" rel="noopener">
+          <span class="btn-icon">𝕏</span>
+          <span>@retro_app_jp へDMする</span>
+          <span class="btn-arrow">▶</span>
+        </a>
+        <div style="margin-top:10px">
+          <div class="resp-badge">
+            <div class="resp-dot"></div>
+            <span>返信目安：数日以内</span>
+          </div>
+        </div>
+        <div class="step-guide">
+          <div class="step-guide-title">▶ DM送信の手順</div>
+          <ol class="steps">
+            <li data-n="1">上のボタンから @retro_app_jp のプロフィールを開く</li>
+            <li data-n="2">「メッセージ」ボタンをタップ</li>
+            <li data-n="3">お問い合わせ内容を入力して送信</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="pixel-div"></div>
+
+      <!-- Card 02: Google Form -->
+      <div class="contact-card">
+        <div class="card-num">02</div>
+        <div class="card-title form">📋 Googleフォーム</div>
+        <div class="card-desc">
+          Googleフォームからの詳細なお問い合わせも受け付けています。
+          バグ報告・機能要望はこちらが便利です。
+        </div>
+        <div class="tag-row">
+          <span class="tag green">📝 詳細記入可</span>
+          <span class="tag green">🐛 バグ報告向き</span>
+          <span class="tag gold">💡 機能要望もOK</span>
+        </div>
+        <a class="action-btn btn-form"
+           href="https://docs.google.com/forms/d/e/1FAIpQLScFu8kggpefCg3kPavJn8_kw8PQ4VwE7GBWOuUwlr0Dagt6qw/viewform?usp=header"
+           target="_blank" rel="noopener"
+           id="formBtn">
+          <span class="btn-icon">📋</span>
+          <span>フォームを開く</span>
+          <span class="btn-arrow">▶</span>
+        </a>
+        <div class="step-guide">
+          <div class="step-guide-title">▶ フォーム送信の手順</div>
+          <ol class="steps">
+            <li data-n="1">上のボタンからGoogleフォームを開く</li>
+            <li data-n="2">お問い合わせの種別を選択する</li>
+            <li data-n="3">内容を入力して「送信」をタップ</li>
+            <li data-n="4">完了メッセージを確認する</li>
+          </ol>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FAQ PANEL -->
+  <div class="rpg-panel">
+    <div class="jc tl"></div><div class="jc tr"></div>
+    <div class="jc bl"></div><div class="jc br"></div>
+    <div class="contact-body">
+      <div class="section-title">❓ よくある質問 (FAQ)</div>
+
+      <div class="contact-card" style="padding-top:22px">
+        <div class="card-num" style="background:var(--work); color:var(--bg)">Q</div>
+        <div style="font-size:7px; color:var(--work); margin-bottom:8px">
+          タイマーの記録が消えてしまった
+        </div>
+        <div style="font-size:7px; color:var(--text); line-height:2.2">
+          記録はブラウザの localStorage に保存されます。ブラウザのデータ消去・プライベートモードでは記録が保持されません。
+        </div>
+      </div>
+
+      <div class="contact-card" style="padding-top:22px">
+        <div class="card-num" style="background:var(--work); color:var(--bg)">Q</div>
+        <div style="font-size:7px; color:var(--work); margin-bottom:8px">
+          音が鳴らない
+        </div>
+        <div style="font-size:7px; color:var(--text); line-height:2.2">
+          ブラウザの音声許可設定をご確認ください。一度タイマーを操作すると音声が有効になります。スマホはサイレントモードをOFFにしてください。
+        </div>
+      </div>
+
+      <div class="contact-card" style="padding-top:22px">
+        <div class="card-num" style="background:var(--work); color:var(--bg)">Q</div>
+        <div style="font-size:7px; color:var(--work); margin-bottom:8px">
+          ホーム画面に追加したい
+        </div>
+        <div style="font-size:7px; color:var(--text); line-height:2.2">
+          iPhone: Safari で開き「共有」→「ホーム画面に追加」<br>
+          Android: Chrome で「ホーム画面に追加」の通知が出ます。
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- OPERATOR INFO -->
+  <div class="rpg-panel">
+    <div class="jc tl"></div><div class="jc tr"></div>
+    <div class="jc bl"></div><div class="jc br"></div>
+    <div class="info-panel">
+      <div class="section-title">🏰 運営者情報</div>
+      <div class="info-row">
+        <div class="info-key">運営者</div>
+        <div class="info-val">FOCUS QUEST 運営事務局</div>
+      </div>
+      <div class="info-row">
+        <div class="info-key">サービス名</div>
+        <div class="info-val">FOCUS QUEST<br>RPGポモドーロタイマー</div>
+      </div>
+      <div class="info-row">
+        <div class="info-key">X (Twitter)</div>
+        <div class="info-val">
+          <a href="https://twitter.com/retro_app_jp" target="_blank" rel="noopener">
+            @retro_app_jp
+          </a>
+        </div>
+      </div>
+      <div class="info-row">
+        <div class="info-key">プライバシー</div>
+        <div class="info-val">
+          <a href="privacy.html" style="color:var(--text-gold); border-color:var(--gold-dark)">
+            プライバシーポリシーを確認する
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div>FOCUS QUEST v1.0.0</div>
+    <div style="margin-top:6px">
+      <a href="index.html">タイマー</a>
+      &nbsp;|&nbsp;
+      <a href="privacy.html">プライバシーポリシー</a>
+      &nbsp;|&nbsp;
+      <a href="contact.html">お問い合わせ</a>
+    </div>
+    <div style="margin-top:8px">⚔ FOCUS QUEST 運営事務局 ⚔</div>
+  </footer>
+
+</div>
+
+<script>
+  // Googleフォーム設定済み
+</script>
+</body>
+</html>
