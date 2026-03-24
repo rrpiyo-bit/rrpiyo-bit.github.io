@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0a1e">
+  <meta name="description" content="Retro App JP - 16bitレトロゲーム風の便利アプリを公開中！WariCan！（割り勘計算機）・FOCUS QUEST（RPGポモドーロタイマー）">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>RETRO APP JP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DotGothic16&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       VARIABLES & RESET
+    ============================================================ */
+    :root {
+      --bg:        #0a0a1e;
+      --panel:     #12122e;
+      --card:      #1a1a38;
+      --yellow:    #ffd700;
+      --yellow2:   #a08000;
+      --green:     #00e676;
+      --green2:    #007a3d;
+      --cyan:      #00e5ff;
+      --cyan2:     #007a8a;
+      --magenta:   #ff4db8;
+      --red:       #ff5252;
+      --gray:      #556088;
+      --white:     #e8eaf6;
+      --font-pix:  'Press Start 2P', monospace;
+      --font-jp:   'DotGothic16', 'Hiragino Kaku Gothic ProN', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: var(--font-jp);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* CRT Scanlines */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent 0px, transparent 3px,
+        rgba(0, 0, 0, 0.07) 3px, rgba(0, 0, 0, 0.07) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Pixel grid background */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px);
+      background-size: 16px 16px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ============================================================
+       LAYOUT
+    ============================================================ */
+    .wrapper {
+      position: relative; z-index: 1;
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 0 12px 60px;
+    }
+
+    /* ============================================================
+       HEADER
+    ============================================================ */
+    .header {
+      background: var(--panel);
+      border-bottom: 4px solid var(--yellow);
+      padding: 28px 16px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-bg-pixels {
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255,215,0,0.12) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+    }
+
+    .header-stars {
+      font-size: 1rem;
+      letter-spacing: 6px;
+      margin-bottom: 14px;
+      position: relative;
+      animation: starBlink 3s ease-in-out infinite;
+    }
+    @keyframes starBlink {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0.4; }
+    }
+
+    .site-title {
+      font-family: var(--font-pix);
+      font-size: clamp(1rem, 5.5vw, 1.6rem);
+      color: var(--yellow);
+      text-shadow:
+        3px 3px 0 var(--yellow2),
+        6px 6px 0 #000,
+        0 0 24px rgba(255, 215, 0, 0.5);
+      letter-spacing: 4px;
+      position: relative;
+      animation: titleGlow 4s ease-in-out infinite;
+      line-height: 1.5;
+    }
+    @keyframes titleGlow {
+      0%,100% { text-shadow: 3px 3px 0 var(--yellow2), 6px 6px 0 #000, 0 0 20px rgba(255,215,0,0.4); }
+      50%      { text-shadow: 3px 3px 0 var(--yellow2), 6px 6px 0 #000, 0 0 40px rgba(255,215,0,0.9); }
+    }
+
+    .site-subtitle {
+      font-family: var(--font-pix);
+      font-size: 0.4rem;
+      color: var(--green);
+      letter-spacing: 3px;
+      margin-top: 10px;
+      position: relative;
+    }
+
+    .header-line {
+      height: 2px;
+      margin-top: 16px;
+      background: linear-gradient(90deg,
+        transparent, var(--yellow2), var(--yellow), var(--yellow2), transparent);
+    }
+
+    /* ============================================================
+       INTRO
+    ============================================================ */
+    .intro {
+      background: var(--panel);
+      border: 3px solid var(--cyan);
+      padding: 16px;
+      margin: 16px 0;
+      text-align: center;
+      position: relative;
+    }
+    .intro::before {
+      content: '▶ INFO ◀';
+      font-family: var(--font-pix);
+      font-size: 0.38rem;
+      color: var(--cyan);
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg);
+      padding: 0 8px;
+      letter-spacing: 2px;
+    }
+    .intro p {
+      font-size: 0.9rem;
+      line-height: 1.9;
+      color: var(--white);
+    }
+
+    /* ============================================================
+       APP CARDS
+    ============================================================ */
+    .apps-section {
+      margin: 20px 0;
+    }
+
+    .section-heading {
+      font-family: var(--font-pix);
+      font-size: 0.5rem;
+      color: var(--magenta);
+      letter-spacing: 3px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-heading::after {
+      content: '';
+      flex: 1;
+      height: 2px;
+      background: var(--magenta);
+      opacity: 0.4;
+    }
+
+    .app-card {
+      background: var(--card);
+      border: 3px solid;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Pixel corner jewels */
+    .app-card .jc {
+      position: absolute;
+      width: 10px; height: 10px;
+      border: 2px solid;
+      z-index: 4;
+    }
+    .app-card .jc.tl { top: -1px; left: -1px; }
+    .app-card .jc.tr { top: -1px; right: -1px; }
+    .app-card .jc.bl { bottom: -1px; left: -1px; }
+    .app-card .jc.br { bottom: -1px; right: -1px; }
+
+    /* Pixel drop shadow */
+    .app-card::after {
+      content: '';
+      position: absolute;
+      top: 6px; left: 6px;
+      width: 100%; height: 100%;
+      z-index: -1;
+    }
+
+    /* WariCan card - yellow theme */
+    .card-warican {
+      border-color: var(--yellow);
+    }
+    .card-warican .jc {
+      border-color: var(--yellow);
+      background: var(--bg);
+    }
+    .card-warican::after {
+      background: rgba(255, 215, 0, 0.15);
+    }
+
+    /* FOCUS QUEST card - gold/orange theme */
+    .card-focusquest {
+      border-color: #c8a84b;
+    }
+    .card-focusquest .jc {
+      border-color: #c8a84b;
+      background: var(--bg);
+    }
+    .card-focusquest::after {
+      background: rgba(200, 168, 75, 0.1);
+    }
+
+    .app-header {
+      padding: 14px 16px 12px;
+      border-bottom: 2px solid;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-warican .app-header {
+      border-color: var(--yellow2);
+      background: linear-gradient(90deg, rgba(255,215,0,0.1) 0%, transparent 100%);
+    }
+    .card-focusquest .app-header {
+      border-color: #6d531e;
+      background: linear-gradient(90deg, rgba(200,168,75,0.1) 0%, transparent 100%);
+    }
+
+    .app-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+      animation: iconBounce 2s ease-in-out infinite;
+    }
+    @keyframes iconBounce {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-5px); }
+    }
+
+    .app-title-wrap {
+      flex: 1;
+    }
+
+    .app-name {
+      font-family: var(--font-pix);
+      font-size: clamp(0.65rem, 3.5vw, 0.9rem);
+      line-height: 1.5;
+      margin-bottom: 6px;
+    }
+    .card-warican  .app-name { color: var(--yellow); }
+    .card-focusquest .app-name { color: #ffd700; }
+
+    .app-tagline {
+      font-size: 0.78rem;
+      color: var(--gray);
+      line-height: 1.6;
+    }
+
+    .app-body {
+      padding: 16px;
+    }
+
+    /* Description */
+    .app-desc-label {
+      font-family: var(--font-pix);
+      font-size: 0.38rem;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-warican  .app-desc-label { color: var(--cyan); }
+    .card-focusquest .app-desc-label { color: #3da876; }
+    .app-desc-label::after {
+      content: '';
+      flex: 1; height: 1px; opacity: 0.3;
+    }
+    .card-warican  .app-desc-label::after { background: var(--cyan); }
+    .card-focusquest .app-desc-label::after { background: #3da876; }
+
+    .app-desc {
+      font-size: 0.85rem;
+      line-height: 1.9;
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+
+    /* How to use */
+    .howto-box {
+      padding: 14px;
+      margin-bottom: 16px;
+      border: 2px dashed;
+      position: relative;
+    }
+    .card-warican  .howto-box { border-color: var(--yellow2); background: rgba(255,215,0,0.04); }
+    .card-focusquest .howto-box { border-color: #6d531e; background: rgba(200,168,75,0.04); }
+
+    .howto-title {
+      font-family: var(--font-pix);
+      font-size: 0.38rem;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+    .card-warican  .howto-title { color: var(--green); }
+    .card-focusquest .howto-title { color: #3da876; }
+
+    .howto-steps {
+      list-style: none;
+      padding: 0;
+    }
+    .howto-steps li {
+      font-size: 0.82rem;
+      line-height: 1.8;
+      color: var(--white);
+      padding-left: 1.4em;
+      position: relative;
+      margin-bottom: 6px;
+    }
+    .howto-steps li::before {
+      position: absolute;
+      left: 0;
+      font-family: var(--font-pix);
+      font-size: 0.55rem;
+    }
+    .card-warican  .howto-steps li::before { content: '▶'; color: var(--yellow); }
+    .card-focusquest .howto-steps li::before { content: '★'; color: #c8a84b; }
+
+    /* Features / tags */
+    .app-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .tag {
+      font-family: var(--font-pix);
+      font-size: 0.3rem;
+      padding: 4px 8px;
+      border: 1px solid;
+      letter-spacing: 1px;
+    }
+    .card-warican  .tag { color: var(--green); border-color: var(--green2); }
+    .card-focusquest .tag { color: #3da876; border-color: #1b4332; }
+
+    /* CTA Button */
+    .btn-play {
+      display: block;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+      font-family: var(--font-pix);
+      font-size: 0.6rem;
+      letter-spacing: 2px;
+      padding: 14px 16px;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.05s, box-shadow 0.05s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .card-warican .btn-play {
+      background: var(--yellow);
+      color: #000;
+      box-shadow: 4px 4px 0 var(--yellow2), 6px 6px 0 #000;
+    }
+    .card-warican .btn-play:active {
+      transform: translate(4px, 4px);
+      box-shadow: 0 0 0 #000;
+    }
+    .card-focusquest .btn-play {
+      background: #c8a84b;
+      color: #0a0805;
+      box-shadow: 4px 4px 0 #6d531e, 6px 6px 0 #000;
+    }
+    .card-focusquest .btn-play:active {
+      transform: translate(4px, 4px);
+      box-shadow: 0 0 0 #000;
+    }
+
+    /* ============================================================
+       FOOTER LINKS
+    ============================================================ */
+    .footer-links {
+      margin: 28px 0 16px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .footer-link {
+      font-family: var(--font-pix);
+      font-size: 0.38rem;
+      color: var(--gray);
+      text-decoration: none;
+      letter-spacing: 1px;
+      border-bottom: 1px solid var(--gray);
+      padding-bottom: 2px;
+      transition: color 0.2s;
+    }
+    .footer-link:hover { color: var(--white); border-color: var(--white); }
+
+    .footer-copy {
+      text-align: center;
+      font-family: var(--font-pix);
+      font-size: 0.3rem;
+      color: var(--gray);
+      letter-spacing: 1px;
+      padding-bottom: 16px;
+    }
+
+    /* ============================================================
+       PIXEL DIVIDER
+    ============================================================ */
+    .pixel-divider {
+      text-align: center;
+      font-size: 0.6rem;
+      color: var(--gray);
+      letter-spacing: 4px;
+      margin: 8px 0;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       HEADER
+  ============================================================ -->
+  <header class="header">
+    <div class="header-bg-pixels"></div>
+    <div class="header-stars">★ ☆ ★ ☆ ★</div>
+    <h1 class="site-title">RETRO APP JP</h1>
+    <p class="site-subtitle">▶ 16BIT STYLE APPS FOR YOUR DAILY LIFE ◀</p>
+    <div class="header-line"></div>
+  </header>
+
+  <div class="wrapper">
+
+    <!-- ============================================================
+         INTRO
+    ============================================================ -->
+    <div class="intro">
+      <p>ゲームの世界から飛び出した<br>
+      便利アプリたちが集まるポータル。<br>
+      日常をちょっとだけレトロに、<br>
+      たのしくしてくれるアプリを公開中！</p>
+    </div>
+
+    <!-- ============================================================
+         APPS
+    ============================================================ -->
+    <section class="apps-section">
+      <div class="section-heading">▶ APPS</div>
+
+      <!-- ---- WariCan！ ---- -->
+      <div class="app-card card-warican">
+        <div class="jc tl"></div><div class="jc tr"></div>
+        <div class="jc bl"></div><div class="jc br"></div>
+
+        <div class="app-header">
+          <div class="app-icon">🪙</div>
+          <div class="app-title-wrap">
+            <div class="app-name">WariCan！</div>
+            <div class="app-tagline">レトロゲーム風 割り勘計算機</div>
+          </div>
+        </div>
+
+        <div class="app-body">
+          <div class="app-desc-label">▶ DESCRIPTION</div>
+          <p class="app-desc">
+            飲み会・旅行・ランチなど、割り勘のシーンを
+            8bitレトロゲームの世界に変えた計算アプリ。
+            コインが弾むアニメーションとピクセルアートな
+            UIで、面倒な計算をたのしく素早く！
+            端数の切り上げ・切り捨て設定にも対応。
+            PWA対応でスマホにインストールして
+            オフラインでも使えます。
+          </p>
+
+          <div class="howto-box">
+            <div class="howto-title">▶ HOW TO PLAY</div>
+            <ol class="howto-steps">
+              <li>
+                まず「人数」を＋／－ボタンで設定します。
+                1人から最大20人まで対応。
+              </li>
+              <li>
+                「合計金額」欄に支払い総額を入力します。
+                テンキー入力・直接入力どちらもOK。
+              </li>
+              <li>
+                「端数処理」を「切り上げ」「切り捨て」
+                「四捨五入」から選択。シーンに合わせて
+                使い分けよう！
+              </li>
+              <li>
+                「CALC！」ボタンを押すと1人あたりの
+                金額がコインエフェクト付きで表示。
+                幹事は合計も確認できます。
+              </li>
+              <li>
+                スマホのホーム画面に追加すれば
+                アプリとして使えてさらに便利！
+              </li>
+            </ol>
+          </div>
+
+          <div class="app-tags">
+            <span class="tag">割り勘</span>
+            <span class="tag">計算機</span>
+            <span class="tag">PWA対応</span>
+            <span class="tag">オフライン可</span>
+            <span class="tag">16bit</span>
+          </div>
+
+          <a class="btn-play" href="https://rrpiyo-bit.github.io/warican/" target="_blank" rel="noopener">
+            ▶ PLAY NOW！
+          </a>
+        </div>
+      </div>
+
+      <div class="pixel-divider">· · · · · · · · · · · · · · ·</div>
+
+      <!-- ---- FOCUS QUEST ---- -->
+      <div class="app-card card-focusquest">
+        <div class="jc tl"></div><div class="jc tr"></div>
+        <div class="jc bl"></div><div class="jc br"></div>
+
+        <div class="app-header">
+          <div class="app-icon">⚔️</div>
+          <div class="app-title-wrap">
+            <div class="app-name">FOCUS QUEST</div>
+            <div class="app-tagline">RPGポモドーロタイマー</div>
+          </div>
+        </div>
+
+        <div class="app-body">
+          <div class="app-desc-label">▶ DESCRIPTION</div>
+          <p class="app-desc">
+            作業をRPGのクエストに見立てたポモドーロ
+            タイマーアプリ。25分の集中タイム＝クエスト
+            クリア！達成するたびに★が積み上がり、
+            経験値（EXP）がたまっていく達成感が
+            モチベーションを維持します。
+            勉強・仕事・創作活動など、集中が必要な
+            あらゆるシーンにおすすめ。
+          </p>
+
+          <div class="howto-box">
+            <div class="howto-title">★ HOW TO PLAY</div>
+            <ol class="howto-steps">
+              <li>
+                画面上部でクエスト（作業）の内容を
+                入力します。何のために集中するか
+                明確にすることで効果アップ！
+              </li>
+              <li>
+                フェーズタブで「WORK（25分）」
+                「BREAK（5分）」「LONG BREAK（15分）」
+                を切り替えられます。
+              </li>
+              <li>
+                「▶ START」ボタンでカウントダウン開始。
+                タイマーが0になると音で通知。
+                25分の集中タイムが1クエストクリア！
+              </li>
+              <li>
+                クエストをクリアするたびに★マークが
+                増え、EXPが加算されます。累計の
+                集中時間もログで確認できます。
+              </li>
+              <li>
+                4回クエストをクリアしたら
+                LONG BREAKで十分に休憩。
+                これを繰り返してレベルアップ！
+              </li>
+            </ol>
+          </div>
+
+          <div class="app-tags">
+            <span class="tag">ポモドーロ</span>
+            <span class="tag">タイマー</span>
+            <span class="tag">RPG風</span>
+            <span class="tag">集中力UP</span>
+            <span class="tag">勉強</span>
+          </div>
+
+          <a class="btn-play" href="https://rrpiyo-bit.github.io/focusquest/" target="_blank" rel="noopener">
+            ★ QUEST START！
+          </a>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ============================================================
+         FOOTER
+    ============================================================ -->
+    <nav class="footer-links">
+      <a class="footer-link" href="privacy.html">PRIVACY POLICY</a>
+      <a class="footer-link" href="contact.html">CONTACT</a>
+    </nav>
+    <p class="footer-copy">© 2025 RETRO APP JP</p>
+
+  </div><!-- /wrapper -->
+
+</body>
+</html>
